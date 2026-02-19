@@ -2,22 +2,22 @@
 
 Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly from provider websites.
 
-**Last updated:** `2026-02-19 12:34 UTC`
+**Last updated:** `2026-02-19 12:42 UTC`
 
 ## Currencies
 
 - [🇺🇸 **USD** — US Dollar](#usd-to-bdt) (2 providers)
 - [🇬🇧 **GBP** — British Pound](#gbp-to-bdt) (2 providers)
-- [🇪🇺 **EUR** — Euro](#eur-to-bdt) (1 providers)
+- [🇪🇺 **EUR** — Euro](#eur-to-bdt) (1 provider)
 - [🇨🇦 **CAD** — Canadian Dollar](#cad-to-bdt) (2 providers)
 - [🇦🇺 **AUD** — Australian Dollar](#aud-to-bdt) (2 providers)
-- [🇸🇬 **SGD** — Singapore Dollar](#sgd-to-bdt) (1 providers)
-- [🇦🇪 **AED** — UAE Dirham](#aed-to-bdt) (1 providers)
-- [🇲🇾 **MYR** — Malaysian Ringgit](#myr-to-bdt) (1 providers)
-- [🇸🇦 **SAR** — Saudi Riyal](#sar-to-bdt) (1 providers)
-- [🇰🇼 **KWD** — Kuwaiti Dinar](#kwd-to-bdt) (1 providers)
-- [🇶🇦 **QAR** — Qatari Riyal](#qar-to-bdt) (1 providers)
-- [🇯🇵 **JPY** — Japanese Yen](#jpy-to-bdt) (1 providers)
+- [🇸🇬 **SGD** — Singapore Dollar](#sgd-to-bdt) (1 provider)
+- [🇦🇪 **AED** — UAE Dirham](#aed-to-bdt) (1 provider)
+- [🇲🇾 **MYR** — Malaysian Ringgit](#myr-to-bdt) (1 provider)
+- [🇸🇦 **SAR** — Saudi Riyal](#sar-to-bdt) (1 provider)
+- [🇰🇼 **KWD** — Kuwaiti Dinar](#kwd-to-bdt) (1 provider)
+- [🇶🇦 **QAR** — Qatari Riyal](#qar-to-bdt) (1 provider)
+- [🇯🇵 **JPY** — Japanese Yen](#jpy-to-bdt) (1 provider)
 
 ## Rates
 
@@ -33,19 +33,19 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 | # | Provider | 1 GBP = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Remitly](https://www.remitly.com/gb/en/bangladesh) | **164.890** | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 164.628 | Bank |
+| 2 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 164.561 | Bank |
 
 ### EUR to BDT
 
 | # | Provider | 1 EUR = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | **143.939** | Bank |
+| **1** | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | **143.860** | Bank |
 
 ### CAD to BDT
 
 | # | Provider | 1 CAD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | **89.305** | Bank |
+| **1** | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | **89.272** | Bank |
 | 2 | [Remitly](https://www.remitly.com/ca/en/bangladesh) | 89.270 | Bank, Mobile Wallet, Cash Pickup |
 
 ### AUD to BDT
@@ -53,13 +53,13 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 | # | Provider | 1 AUD = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Remitly](https://www.remitly.com/au/en/bangladesh) | **87.820** | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.212 | Bank |
+| 2 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.151 | Bank |
 
 ### SGD to BDT
 
 | # | Provider | 1 SGD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | **96.395** | Bank |
+| **1** | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | **96.376** | Bank |
 
 ### AED to BDT
 
@@ -122,7 +122,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-19T12:34:46.906726+00:00",
+  "updated_at": "2026-02-19T12:42:29.695966+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -140,4 +140,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-19 12:34 UTC*
+*Auto-generated on 2026-02-19 12:42 UTC*
