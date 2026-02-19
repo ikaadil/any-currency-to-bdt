@@ -104,7 +104,58 @@ async def scrape_remitly(session: aiohttp.ClientSession, src: str) -> Rate | Non
         return None
 
 
-SCRAPERS = [scrape_wise, scrape_remitly]
+TAPTAPSEND_API = "https://api.taptapsend.com/api/fxRates"
+TAPTAPSEND_HEADERS = {
+    "Appian-Version": "web/2022-05-03.0",
+    "X-Device-Id": "web",
+    "X-Device-Model": "web",
+}
+TAPTAPSEND_URL = "https://www.taptapsend.com/send-money-to/bangladesh"
+
+_taptapsend_cache: dict[str, float] | None = None
+
+
+async def _load_taptapsend(session: aiohttp.ClientSession) -> dict[str, float]:
+    """Fetch all BDT rates from TapTapSend in a single API call, cached."""
+    global _taptapsend_cache
+    if _taptapsend_cache is not None:
+        return _taptapsend_cache
+
+    rates: dict[str, float] = {}
+    try:
+        async with session.get(TAPTAPSEND_API, headers=TAPTAPSEND_HEADERS,
+                               timeout=aiohttp.ClientTimeout(total=10)) as r:
+            if r.status != 200:
+                return rates
+            data = await r.json(content_type=None)
+            for country in data.get("availableCountries", []):
+                cur = country["currency"]
+                for corridor in country.get("corridors", []):
+                    if corridor.get("currency") == "BDT":
+                        rate = float(corridor["fxRate"])
+                        if cur not in rates or rate > rates[cur]:
+                            rates[cur] = rate
+    except Exception as e:
+        print(f"  [TapTapSend] load failed: {e}")
+
+    _taptapsend_cache = rates
+    return rates
+
+
+async def scrape_taptapsend(session: aiohttp.ClientSession, src: str) -> Rate | None:
+    try:
+        rates = await _load_taptapsend(session)
+        rate = rates.get(src)
+        if rate is None:
+            return None
+        return Rate("TapTapSend", TAPTAPSEND_URL,
+                    round(rate, 3), "Bank, Mobile Wallet")
+    except Exception as e:
+        print(f"  [TapTapSend] {src}: {e}")
+        return None
+
+
+SCRAPERS = [scrape_wise, scrape_remitly, scrape_taptapsend]
 
 
 # ── Fetch (all currencies × all providers in parallel) ───────────────────────
