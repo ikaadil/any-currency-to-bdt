@@ -247,7 +247,7 @@ if __name__ == "__main__":
     data = asyncio.run(fetch_all())
     elapsed = time.monotonic() - start
 
-    json_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    json_path.write_text(json.dumps(data, indent=4, ensure_ascii=False), encoding="utf-8")
     readme = build_readme(data)
     readme_path.write_text(readme, encoding="utf-8")
 
