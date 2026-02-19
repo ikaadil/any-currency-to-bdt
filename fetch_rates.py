@@ -248,7 +248,7 @@ if __name__ == "__main__":
 
     data = asyncio.run(fetch_all())
 
-    json_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+    json_path.write_text(json.dumps(data, indent=4, ensure_ascii=False), encoding="utf-8")
     print(f"\n📄 rates.json written")
 
     readme = build_readme(data)
