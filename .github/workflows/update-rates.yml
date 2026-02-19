@@ -2,7 +2,6 @@ name: Update README
 
 permissions:
   contents: write
-  pages: write
 
 on:
   schedule:
@@ -35,10 +34,3 @@ jobs:
           git add .
           git commit -m ":card_file_box: Update rates: $(date +'%Y-%m-%d')" || exit 0
           git push
-
-      - name: Publish to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
-          force_orphan: true
