@@ -155,14 +155,6 @@ def build_readme(raw: dict) -> str:
     L.append(f"**Last updated:** `{updated}`")
     L.append("")
 
-    L.append("## Currencies")
-    L.append("")
-    for code, symbol, flag, name in CURRENCIES:
-        count = len(rates_map.get(code, []))
-        label = "provider" if count == 1 else "providers"
-        L.append(f"- [{flag} **{code}** — {name}](#{code.lower()}-to-bdt) ({count} {label})")
-    L.append("")
-
     L.append("## Rates")
     L.append("")
     for code, symbol, flag, name in CURRENCIES:
@@ -183,27 +175,6 @@ def build_readme(raw: dict) -> str:
             provider_str = f"[{r['provider']}]({r['url']})"
             L.append(f"| {rank} | {provider_str} | {rate_str} | {r['delivery']} |")
         L.append("")
-
-    L.append("## Providers")
-    L.append("")
-    L.append("| Provider | Source | Method |")
-    L.append("|----------|--------|--------|")
-    L.append("| [Wise](https://wise.com) | `wise.com/rates/live` | JSON endpoint |")
-    L.append("| [Remitly](https://www.remitly.com) | `remitly.com/{region}/en/bangladesh` | HTML scrape |")
-    L.append("")
-    L.append("Adding a provider? Write one async function in `fetch_rates.py` and append it to `SCRAPERS`.")
-    L.append("")
-
-    L.append("## How it works")
-    L.append("")
-    L.append("```")
-    L.append("fetch_rates.py  →  rates.json  →  README.md")
-    L.append("     ↑                                 ↑")
-    L.append("  scrape providers              generated from JSON")
-    L.append("```")
-    L.append("")
-    L.append("A [GitHub Actions cron job](.github/workflows/update-rates.yml) runs this daily at `00:00 UTC` and commits the results.")
-    L.append("")
 
     L.append("## Data")
     L.append("")

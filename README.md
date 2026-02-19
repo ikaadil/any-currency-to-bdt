@@ -2,22 +2,7 @@
 
 Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly from provider websites.
 
-**Last updated:** `2026-02-19 15:49 UTC`
-
-## Currencies
-
-- [🇺🇸 **USD** — US Dollar](#usd-to-bdt) (2 providers)
-- [🇬🇧 **GBP** — British Pound](#gbp-to-bdt) (2 providers)
-- [🇪🇺 **EUR** — Euro](#eur-to-bdt) (1 provider)
-- [🇨🇦 **CAD** — Canadian Dollar](#cad-to-bdt) (2 providers)
-- [🇦🇺 **AUD** — Australian Dollar](#aud-to-bdt) (2 providers)
-- [🇸🇬 **SGD** — Singapore Dollar](#sgd-to-bdt) (1 provider)
-- [🇦🇪 **AED** — UAE Dirham](#aed-to-bdt) (1 provider)
-- [🇲🇾 **MYR** — Malaysian Ringgit](#myr-to-bdt) (1 provider)
-- [🇸🇦 **SAR** — Saudi Riyal](#sar-to-bdt) (1 provider)
-- [🇰🇼 **KWD** — Kuwaiti Dinar](#kwd-to-bdt) (1 provider)
-- [🇶🇦 **QAR** — Qatari Riyal](#qar-to-bdt) (1 provider)
-- [🇯🇵 **JPY** — Japanese Yen](#jpy-to-bdt) (1 provider)
+**Last updated:** `2026-02-19 16:04 UTC`
 
 ## Rates
 
@@ -33,19 +18,19 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 | # | Provider | 1 GBP = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Remitly](https://www.remitly.com/gb/en/bangladesh) | **164.890** | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 164.591 | Bank |
+| 2 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 164.408 | Bank |
 
 ### EUR to BDT
 
 | # | Provider | 1 EUR = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | **143.854** | Bank |
+| **1** | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | **143.768** | Bank |
 
 ### CAD to BDT
 
 | # | Provider | 1 CAD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | **89.337** | Bank |
+| **1** | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | **89.301** | Bank |
 | 2 | [Remitly](https://www.remitly.com/ca/en/bangladesh) | 89.220 | Bank, Mobile Wallet, Cash Pickup |
 
 ### AUD to BDT
@@ -53,13 +38,13 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 | # | Provider | 1 AUD = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Remitly](https://www.remitly.com/au/en/bangladesh) | **87.820** | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.347 | Bank |
+| 2 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.224 | Bank |
 
 ### SGD to BDT
 
 | # | Provider | 1 SGD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | **96.368** | Bank |
+| **1** | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | **96.327** | Bank |
 
 ### AED to BDT
 
@@ -95,26 +80,7 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 
 | # | Provider | 1 JPY = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/jp/currency-converter/jpy-to-bdt-rate) | **0.788** | Bank |
-
-## Providers
-
-| Provider | Source | Method |
-|----------|--------|--------|
-| [Wise](https://wise.com) | `wise.com/rates/live` | JSON endpoint |
-| [Remitly](https://www.remitly.com) | `remitly.com/{region}/en/bangladesh` | HTML scrape |
-
-Adding a provider? Write one async function in `fetch_rates.py` and append it to `SCRAPERS`.
-
-## How it works
-
-```
-fetch_rates.py  →  rates.json  →  README.md
-     ↑                                 ↑
-  scrape providers              generated from JSON
-```
-
-A [GitHub Actions cron job](.github/workflows/update-rates.yml) runs this daily at `00:00 UTC` and commits the results.
+| **1** | [Wise](https://wise.com/jp/currency-converter/jpy-to-bdt-rate) | **0.789** | Bank |
 
 ## Data
 
@@ -122,7 +88,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-19T15:49:43.575625+00:00",
+  "updated_at": "2026-02-19T16:04:09.299790+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -140,4 +106,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-19 15:49 UTC*
+*Auto-generated on 2026-02-19 16:04 UTC*
