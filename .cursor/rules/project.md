@@ -34,24 +34,65 @@ scrape providers  →  rates.json  →  README.md
 
 All 3 steps happen in one `python fetch_rates.py` invocation.
 
-## Key Design Decisions
+## Architecture
+
+### Provider base class
+
+All scrapers inherit from `Provider(ABC)`. The base class handles:
+
+- **Auto-registration** via `__init_subclass__` — no manual list to maintain
+- **Error handling** — `scrape()` wraps `fetch_rate()` in try/except
+- **Rate construction** — builds `Rate(name, url, rate, delivery)` automatically
+- **Caching** — providers that batch-load rates store cache as instance state
+
+### Adding a new provider
+
+Subclass `Provider`, set three class attributes, implement one method:
+
+```python
+class MyProvider(Provider):
+    name     = "MyProvider"                  # display name
+    url      = "https://example.com/bd"      # default provider URL
+    delivery = "Bank"                        # delivery methods
+
+    async def fetch_rate(self, session, src):
+        # Return a float (the BDT rate), or None if unavailable.
+        async with session.get(f"https://api.example.com/{src}", timeout=TIMEOUT) as r:
+            if r.status != 200:
+                return None
+            data = await r.json(content_type=None)
+            return data.get("rate")
+```
+
+Optional overrides:
+- `get_url(src)` — return a currency-specific URL (default: `self.url`)
+- `__init__` — add a `self._cache` dict for providers that batch-load
+
+### Provider contract
+
+- `fetch_rate(session, src)` receives an `aiohttp.ClientSession` and source currency code (e.g. `"USD"`)
+- Return a `float` on success, `None` on failure (corridor not supported, API error, etc.)
+- Raise freely — the base class `scrape()` catches all exceptions
+- Use the module-level `TIMEOUT` constant for request timeouts
+- Use `TARGET` constant (`"BDT"`) instead of hardcoding the string
 
 ### One file
-Everything lives in `fetch_rates.py` (~280 lines). No multi-file module structure — not needed at this scale and keeps it dead simple to understand and maintain.
+
+Everything lives in `fetch_rates.py` (~300 lines). No multi-file module structure — not needed at this scale and keeps it dead simple to understand and maintain.
 
 ### Parallel fetching
-All requests (12 currencies × N providers) fire simultaneously via `asyncio.gather`. This brings runtime from ~26s (sequential httpx) down to ~1.4s.
 
-### aiohttp over httpx
-Switched from httpx to aiohttp for performance. aiohttp requires explicit SSL context on macOS — handled via `certifi.where()`.
+All requests (12 currencies × N providers) fire simultaneously via `asyncio.gather`. This brings runtime from ~26s (sequential httpx) down to ~1.5s.
 
 ### JSON as intermediate format
+
 `rates.json` is the source of truth. The README is generated from JSON, not from scrape results directly. This means:
 - The JSON is a usable data artifact on its own
 - README generation is decoupled from scraping
 - Both files are committed to the repo
 
 ### No third-party rate APIs
+
 Rates come only from the actual provider websites (Wise, Remitly, etc.), never from aggregator APIs like open.er-api.com.
 
 ## Provider Details
@@ -83,20 +124,15 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - **Coverage**: All 12 currencies (mid-market rates)
 
 ### Providers that cannot be scraped
-- **Elevate Pay**: Framer-based JS-rendered site, no accessible API, rate not in HTML
-- **MoneyGram**: API protected by Datadome CAPTCHA, all endpoints return 403
-
-## Adding a New Provider
-
-1. Write an async function: `async def scrape_xyz(session: aiohttp.ClientSession, src: str) -> Rate | None`
-2. Append it to the `SCRAPERS` list
-3. The runner and README builder pick it up automatically — no other changes needed
-
-### Provider function contract
-- Takes `(session, source_currency_code)` — e.g. `(session, "USD")`
-- Returns a `Rate` dataclass on success, `None` on failure
-- Must catch all its own exceptions — never crash the script
-- Use `aiohttp.ClientTimeout(total=10)` for timeouts
+- **Western Union**: `prices/catalog` API requires bot-protection channel token
+- **Xoom**: API returns 403 from non-browser requests (fingerprinting)
+- **WorldRemit**: GraphQL API blocked by PerimeterX bot protection
+- **Ria**: No public Bangladesh rates endpoint; API requires authentication
+- **Paysend**: Rates loaded client-side; API rate-limited (429)
+- **nsave**: Fully JS-rendered calculator, no accessible API
+- **SendWave**: No public rate API
+- **MoneyGram**: Datadome CAPTCHA on all endpoints
+- **Elevate Pay**: Framer-based JS-rendered site, no accessible API
 
 ## Coding Conventions
 
@@ -107,6 +143,7 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - No bare `except:` — catch specific exceptions
 - Constants in UPPER_SNAKE_CASE
 - Section comments with `# ── Name ───` separators
+- Provider-specific constants as class attributes (prefixed `_` if internal)
 
 ## GitHub Actions
 

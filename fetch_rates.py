@@ -1,16 +1,34 @@
 #!/usr/bin/env python3
-"""Fetch BDT exchange rates by scraping provider websites, save to rates.json, build README.md."""
+"""Fetch BDT exchange rates from provider websites, save to rates.json, build README.md.
+
+To add a new provider, subclass ``Provider`` and implement ``fetch_rate``:
+
+    class MyProvider(Provider):
+        name     = "MyProvider"
+        url      = "https://example.com/bangladesh"
+        delivery = "Bank"
+
+        async def fetch_rate(self, session, src):
+            async with session.get(f"https://api.example.com/{src}", timeout=TIMEOUT) as r:
+                if r.status != 200:
+                    return None
+                data = await r.json(content_type=None)
+                return data.get("rate")
+
+That's it — the provider auto-registers and the runner picks it up.
+"""
 from __future__ import annotations
 
 import asyncio
 import json
 import re
-import time
-from datetime import datetime, timezone
-from dataclasses import dataclass, asdict
-from pathlib import Path
-
 import ssl
+import time
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, asdict
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import ClassVar
 
 import aiohttp
 import certifi
@@ -18,6 +36,7 @@ from bs4 import BeautifulSoup
 
 ROOT = Path(__file__).parent
 TARGET = "BDT"
+TIMEOUT = aiohttp.ClientTimeout(total=10)
 
 CURRENCIES = [
     ("USD", "$", "🇺🇸", "US Dollar"),
@@ -41,17 +60,6 @@ HEADERS = {
     ),
 }
 
-WISE_REGION = {
-    "USD": "us", "GBP": "gb", "EUR": "de", "CAD": "ca", "AUD": "au",
-    "SGD": "sg", "AED": "ae", "MYR": "my", "SAR": "sa", "KWD": "kw",
-    "QAR": "qa", "JPY": "jp", "NZD": "nz", "BHD": "bh", "OMR": "om",
-}
-
-REMITLY_REGION = {
-    "USD": ("us", "en"), "GBP": ("gb", "en"), "EUR": ("de", "en"),
-    "CAD": ("ca", "en"), "AUD": ("au", "en"),
-}
-
 
 @dataclass
 class Rate:
@@ -61,35 +69,98 @@ class Rate:
     delivery: str
 
 
-# ── Scrapers ──────────────────────────────────────────────────────────────────
+# ── Provider base class ──────────────────────────────────────────────────────
 
-async def scrape_wise(session: aiohttp.ClientSession, src: str) -> Rate | None:
-    try:
+_providers: list[Provider] = []
+
+
+class Provider(ABC):
+    """Base class for all rate providers.
+
+    Subclasses must set three class attributes (``name``, ``url``,
+    ``delivery``) and implement :meth:`fetch_rate`.  Everything else —
+    error handling, ``Rate`` construction, registration — is automatic.
+
+    Override :meth:`get_url` if the provider URL varies per currency.
+    """
+
+    name: ClassVar[str]
+    url: ClassVar[str]
+    delivery: ClassVar[str]
+
+    def __init_subclass__(cls, **kwargs):
+        super().__init_subclass__(**kwargs)
+        if not getattr(cls, "__abstractmethods__", frozenset()):
+            _providers.append(cls())
+
+    @abstractmethod
+    async def fetch_rate(
+        self, session: aiohttp.ClientSession, src: str
+    ) -> float | None:
+        """Return the BDT exchange rate for *src* currency, or ``None``."""
+
+    def get_url(self, src: str) -> str:
+        """Return the user-facing URL for a given source currency."""
+        return self.url
+
+    async def scrape(
+        self, session: aiohttp.ClientSession, src: str
+    ) -> Rate | None:
+        """Fetch, wrap in a ``Rate``, and handle errors. Do not override."""
+        try:
+            rate = await self.fetch_rate(session, src)
+            if rate is None:
+                return None
+            return Rate(self.name, self.get_url(src), round(rate, 3), self.delivery)
+        except Exception as e:
+            print(f"  [{self.name}] {src}: {e}")
+            return None
+
+
+# ── Providers ────────────────────────────────────────────────────────────────
+
+
+class Wise(Provider):
+    name = "Wise"
+    url = "https://wise.com/us/currency-converter/usd-to-bdt-rate"
+    delivery = "Bank"
+
+    _REGIONS: ClassVar[dict[str, str]] = {
+        "USD": "us", "GBP": "gb", "EUR": "de", "CAD": "ca", "AUD": "au",
+        "SGD": "sg", "AED": "ae", "MYR": "my", "SAR": "sa", "KWD": "kw",
+        "QAR": "qa", "JPY": "jp", "NZD": "nz", "BHD": "bh", "OMR": "om",
+    }
+
+    async def fetch_rate(self, session, src):
         url = f"https://wise.com/rates/live?source={src}&target={TARGET}"
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as r:
+        async with session.get(url, timeout=TIMEOUT) as r:
             if r.status != 200:
                 return None
             data = await r.json(content_type=None)
-            val = data.get("value")
-            if val is None:
-                return None
-            region = WISE_REGION.get(src, "us")
-            return Rate("Wise",
-                        f"https://wise.com/{region}/currency-converter/{src.lower()}-to-bdt-rate",
-                        round(float(val), 3), "Bank")
-    except Exception as e:
-        print(f"  [Wise] {src}: {e}")
-        return None
+            return data.get("value")
+
+    def get_url(self, src):
+        region = self._REGIONS.get(src, "us")
+        return f"https://wise.com/{region}/currency-converter/{src.lower()}-to-bdt-rate"
 
 
-async def scrape_remitly(session: aiohttp.ClientSession, src: str) -> Rate | None:
-    region = REMITLY_REGION.get(src)
-    if not region:
-        return None
-    country, lang = region
-    url = f"https://www.remitly.com/{country}/{lang}/bangladesh"
-    try:
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as r:
+class Remitly(Provider):
+    name = "Remitly"
+    url = "https://www.remitly.com/us/en/bangladesh"
+    delivery = "Bank, Mobile Wallet, Cash Pickup"
+
+    _REGIONS: ClassVar[dict[str, tuple[str, str]]] = {
+        "USD": ("us", "en"), "GBP": ("gb", "en"), "EUR": ("de", "en"),
+        "CAD": ("ca", "en"), "AUD": ("au", "en"),
+    }
+
+    async def fetch_rate(self, session, src):
+        region = self._REGIONS.get(src)
+        if not region:
+            return None
+        country, lang = region
+        url = f"https://www.remitly.com/{country}/{lang}/bangladesh"
+        async with session.get(url, timeout=TIMEOUT) as r:
             if r.status != 200:
                 return None
             html = await r.text()
@@ -97,154 +168,119 @@ async def scrape_remitly(session: aiohttp.ClientSession, src: str) -> Rate | Non
             matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
             if not matches:
                 return None
-            return Rate("Remitly", url, round(max(float(m) for m in matches), 3),
-                        "Bank, Mobile Wallet, Cash Pickup")
-    except Exception as e:
-        print(f"  [Remitly] {src}: {e}")
-        return None
+            return max(float(m) for m in matches)
+
+    def get_url(self, src):
+        country, lang = self._REGIONS.get(src, ("us", "en"))
+        return f"https://www.remitly.com/{country}/{lang}/bangladesh"
 
 
-TAPTAPSEND_API = "https://api.taptapsend.com/api/fxRates"
-TAPTAPSEND_HEADERS = {
-    "Appian-Version": "web/2022-05-03.0",
-    "X-Device-Id": "web",
-    "X-Device-Model": "web",
-}
-TAPTAPSEND_URL = "https://www.taptapsend.com/send-money-to/bangladesh"
+class TapTapSend(Provider):
+    name = "TapTapSend"
+    url = "https://www.taptapsend.com/send-money-to/bangladesh"
+    delivery = "Bank, Mobile Wallet"
 
-_taptapsend_cache: dict[str, float] | None = None
+    _API = "https://api.taptapsend.com/api/fxRates"
+    _API_HEADERS: ClassVar[dict[str, str]] = {
+        "Appian-Version": "web/2022-05-03.0",
+        "X-Device-Id": "web",
+        "X-Device-Model": "web",
+    }
 
+    def __init__(self):
+        self._cache: dict[str, float] | None = None
 
-async def _load_taptapsend(session: aiohttp.ClientSession) -> dict[str, float]:
-    """Fetch all BDT rates from TapTapSend in a single API call, cached."""
-    global _taptapsend_cache
-    if _taptapsend_cache is not None:
-        return _taptapsend_cache
-
-    rates: dict[str, float] = {}
-    try:
-        async with session.get(TAPTAPSEND_API, headers=TAPTAPSEND_HEADERS,
-                               timeout=aiohttp.ClientTimeout(total=10)) as r:
+    async def _load(self, session: aiohttp.ClientSession) -> dict[str, float]:
+        if self._cache is not None:
+            return self._cache
+        rates: dict[str, float] = {}
+        async with session.get(self._API, headers=self._API_HEADERS,
+                               timeout=TIMEOUT) as r:
             if r.status != 200:
                 return rates
             data = await r.json(content_type=None)
             for country in data.get("availableCountries", []):
                 cur = country["currency"]
                 for corridor in country.get("corridors", []):
-                    if corridor.get("currency") == "BDT":
+                    if corridor.get("currency") == TARGET:
                         rate = float(corridor["fxRate"])
                         if cur not in rates or rate > rates[cur]:
                             rates[cur] = rate
-    except Exception as e:
-        print(f"  [TapTapSend] load failed: {e}")
+        self._cache = rates
+        return rates
 
-    _taptapsend_cache = rates
-    return rates
-
-
-async def scrape_taptapsend(session: aiohttp.ClientSession, src: str) -> Rate | None:
-    try:
-        rates = await _load_taptapsend(session)
-        rate = rates.get(src)
-        if rate is None:
-            return None
-        return Rate("TapTapSend", TAPTAPSEND_URL,
-                    round(rate, 3), "Bank, Mobile Wallet")
-    except Exception as e:
-        print(f"  [TapTapSend] {src}: {e}")
-        return None
+    async def fetch_rate(self, session, src):
+        return (await self._load(session)).get(src)
 
 
-# ── NALA ─────────────────────────────────────────────────────────────────────
+class Nala(Provider):
+    name = "NALA"
+    url = "https://www.nala.com/country/bangladesh"
+    delivery = "Bank, Mobile Wallet"
 
-NALA_API = "https://partners-api.prod.nala-api.com/v1/fx/rates"
-NALA_URL = "https://www.nala.com/country/bangladesh"
+    _API = "https://partners-api.prod.nala-api.com/v1/fx/rates"
 
-_nala_cache: dict[str, float] | None = None
+    def __init__(self):
+        self._cache: dict[str, float] | None = None
 
-
-async def _load_nala(session: aiohttp.ClientSession) -> dict[str, float]:
-    global _nala_cache
-    if _nala_cache is not None:
-        return _nala_cache
-
-    rates: dict[str, float] = {}
-    try:
-        async with session.get(NALA_API, timeout=aiohttp.ClientTimeout(total=10)) as r:
+    async def _load(self, session: aiohttp.ClientSession) -> dict[str, float]:
+        if self._cache is not None:
+            return self._cache
+        rates: dict[str, float] = {}
+        async with session.get(self._API, timeout=TIMEOUT) as r:
             if r.status != 200:
                 return rates
             data = await r.json(content_type=None)
             for entry in data.get("data", []):
-                if entry.get("destination_currency") == "BDT" and entry.get("provider_name") == "NALA":
+                if (entry.get("destination_currency") == TARGET
+                        and entry.get("provider_name") == "NALA"):
                     rates[entry["source_currency"]] = float(entry["rate"])
-    except Exception as e:
-        print(f"  [NALA] load failed: {e}")
+        self._cache = rates
+        return rates
 
-    _nala_cache = rates
-    return rates
-
-
-async def scrape_nala(session: aiohttp.ClientSession, src: str) -> Rate | None:
-    try:
-        rate = (await _load_nala(session)).get(src)
-        if rate is None:
-            return None
-        return Rate("NALA", NALA_URL, round(rate, 3), "Bank, Mobile Wallet")
-    except Exception as e:
-        print(f"  [NALA] {src}: {e}")
-        return None
+    async def fetch_rate(self, session, src):
+        return (await self._load(session)).get(src)
 
 
-# ── Instarem ─────────────────────────────────────────────────────────────────
+class Instarem(Provider):
+    name = "Instarem"
+    url = "https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/"
+    delivery = "Bank"
 
-INSTAREM_API = "https://www.instarem.com/wp-json/instarem/v2/convert-rate"
+    _API = "https://www.instarem.com/wp-json/instarem/v2/convert-rate"
 
-_instarem_cache: dict[str, float] = {}
+    def __init__(self):
+        self._cache: dict[str, float] = {}
 
-
-async def _load_instarem(session: aiohttp.ClientSession, src: str) -> float | None:
-    if src in _instarem_cache:
-        return _instarem_cache[src]
-
-    try:
-        url = f"{INSTAREM_API}/{src.lower()}/"
-        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as r:
+    async def fetch_rate(self, session, src):
+        if src in self._cache:
+            return self._cache[src]
+        url = f"{self._API}/{src.lower()}/"
+        async with session.get(url, timeout=TIMEOUT) as r:
             if r.status != 200:
                 return None
             data = await r.json(content_type=None)
             rates = data.get("data", {}) if data.get("status") else data
-            bdt = rates.get("BDT")
+            bdt = rates.get(TARGET)
             if bdt is not None:
-                _instarem_cache[src] = float(bdt)
-                return _instarem_cache[src]
-    except Exception as e:
-        print(f"  [Instarem] load {src}: {e}")
-    return None
-
-
-async def scrape_instarem(session: aiohttp.ClientSession, src: str) -> Rate | None:
-    try:
-        rate = await _load_instarem(session, src)
-        if rate is None:
-            return None
-        url = f"https://www.instarem.com/en-us/currency-conversion/{src.lower()}-to-bdt/"
-        return Rate("Instarem", url, round(rate, 3), "Bank")
-    except Exception as e:
-        print(f"  [Instarem] {src}: {e}")
+                self._cache[src] = float(bdt)
+                return self._cache[src]
         return None
 
+    def get_url(self, src):
+        return f"https://www.instarem.com/en-us/currency-conversion/{src.lower()}-to-bdt/"
 
-SCRAPERS = [scrape_wise, scrape_remitly, scrape_taptapsend, scrape_nala, scrape_instarem]
+
+# ── Runner ───────────────────────────────────────────────────────────────────
 
 
-# ── Fetch (all currencies × all providers in parallel) ───────────────────────
-
-async def _fetch_one(session: aiohttp.ClientSession, fn, code: str) -> tuple[str, str, Rate | None]:
-    result = await fn(session, code)
-    name = fn.__name__.replace("scrape_", "")
-    tag = f"✅ {result.provider}: {result.rate}" if result else f"❌ {name}"
+async def _fetch_one(
+    session: aiohttp.ClientSession, provider: Provider, code: str
+) -> tuple[str, Rate | None]:
+    result = await provider.scrape(session, code)
+    tag = f"✅ {result.provider}: {result.rate}" if result else f"❌ {provider.name}"
     print(f"  {code}: {tag}")
-    return (code, name, result)
+    return (code, result)
 
 
 async def fetch_all() -> dict:
@@ -255,13 +291,13 @@ async def fetch_all() -> dict:
     conn = aiohttp.TCPConnector(ssl=ssl_ctx)
     async with aiohttp.ClientSession(headers=HEADERS, connector=conn) as session:
         tasks = [
-            _fetch_one(session, fn, code)
+            _fetch_one(session, provider, code)
             for code, *_ in CURRENCIES
-            for fn in SCRAPERS
+            for provider in _providers
         ]
         results = await asyncio.gather(*tasks)
 
-    for code, _, rate in results:
+    for code, rate in results:
         if rate:
             data[code].append(asdict(rate))
 
@@ -271,74 +307,81 @@ async def fetch_all() -> dict:
     return {"updated_at": now, "target": TARGET, "rates": data}
 
 
-# ── README from JSON ──────────────────────────────────────────────────────────
+# ── README builder ───────────────────────────────────────────────────────────
+
 
 def build_readme(raw: dict) -> str:
     updated = datetime.fromisoformat(raw["updated_at"]).strftime("%Y-%m-%d %H:%M UTC")
     rates_map: dict[str, list[dict]] = raw["rates"]
-    L: list[str] = []
+    lines: list[str] = []
 
-    L.append("# Any Currency to BDT")
-    L.append("")
-    L.append("Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly from provider websites.")
-    L.append("")
-    L.append(f"**Last updated:** `{updated}`")
-    L.append("")
+    lines.append("# Any Currency to BDT")
+    lines.append("")
+    lines.append("Live remittance exchange rates to **Bangladeshi Taka (BDT)**,"
+                  " scraped directly from provider websites.")
+    lines.append("")
+    lines.append(f"**Last updated:** `{updated}`")
+    lines.append("")
 
-    L.append("## Rates")
-    L.append("")
+    lines.append("## Rates")
+    lines.append("")
     for code, symbol, flag, name in CURRENCIES:
         rates = rates_map.get(code, [])
-        L.append(f"### {code} to BDT")
-        L.append("")
+        lines.append(f"### {code} to BDT")
+        lines.append("")
         if not rates:
-            L.append("No rates available.")
-            L.append("")
+            lines.append("No rates available.")
+            lines.append("")
             continue
         best = rates[0]["rate"]
-        L.append(f"| # | Provider | 1 {code} = BDT | Delivery |")
-        L.append("|--:|----------|---------------:|----------|")
+        lines.append(f"| # | Provider | 1 {code} = BDT | Delivery |")
+        lines.append("|--:|----------|---------------:|----------|")
         for i, r in enumerate(rates, 1):
             is_best = r["rate"] == best
             rank = f"**{i}**" if is_best else str(i)
             rate_str = f"**{r['rate']:.3f}**" if is_best else f"{r['rate']:.3f}"
             provider_str = f"[{r['provider']}]({r['url']})"
-            L.append(f"| {rank} | {provider_str} | {rate_str} | {r['delivery']} |")
-        L.append("")
+            lines.append(f"| {rank} | {provider_str} | {rate_str} | {r['delivery']} |")
+        lines.append("")
 
-    L.append("## Data")
-    L.append("")
-    L.append("Raw rate data is available in [`rates.json`](rates.json) for programmatic use:")
-    L.append("")
-    L.append("```json")
-    L.append('{')
-    L.append(f'  "updated_at": "{raw["updated_at"]}",')
-    L.append('  "target": "BDT",')
-    L.append('  "rates": {')
-    L.append('    "USD": [')
-    L.append('      { "provider": "Wise", "rate": 122.200, ... },')
-    L.append('      { "provider": "Remitly", "rate": 121.920, ... }')
-    L.append('    ],')
-    L.append('    ...')
-    L.append('  }')
-    L.append('}')
-    L.append("```")
-    L.append("")
+    lines.append("## Data")
+    lines.append("")
+    lines.append("Raw rate data is available in [`rates.json`](rates.json)"
+                  " for programmatic use:")
+    lines.append("")
+    lines.append("```json")
+    lines.append("{")
+    lines.append(f'  "updated_at": "{raw["updated_at"]}",')
+    lines.append('  "target": "BDT",')
+    lines.append('  "rates": {')
+    lines.append('    "USD": [')
+    lines.append('      { "provider": "Wise", "rate": 122.200, ... },')
+    lines.append('      { "provider": "Remitly", "rate": 121.920, ... }')
+    lines.append("    ],")
+    lines.append("    ...")
+    lines.append("  }")
+    lines.append("}")
+    lines.append("```")
+    lines.append("")
 
-    L.append("## Disclaimer")
-    L.append("")
-    L.append("This project is independent and not affiliated with any remittance provider. Rates are scraped from publicly accessible pages and may not reflect actual transfer rates or fees. Always confirm on the provider's website before sending money.")
-    L.append("")
+    lines.append("## Disclaimer")
+    lines.append("")
+    lines.append("This project is independent and not affiliated with any"
+                  " remittance provider. Rates are scraped from publicly"
+                  " accessible pages and may not reflect actual transfer rates"
+                  " or fees. Always confirm on the provider's website before"
+                  " sending money.")
+    lines.append("")
 
-    L.append("---")
-    L.append("")
-    L.append(f"*Auto-generated on {updated}*")
-    L.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append(f"*Auto-generated on {updated}*")
+    lines.append("")
 
-    return "\n".join(L)
+    return "\n".join(lines)
 
 
-# ── Main ──────────────────────────────────────────────────────────────────────
+# ── Main ─────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     json_path = ROOT / "rates.json"
