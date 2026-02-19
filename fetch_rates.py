@@ -130,46 +130,114 @@ async def fetch_all() -> dict:
 # ── README from JSON ──────────────────────────────────────────────────────────
 
 def build_readme(raw: dict) -> str:
-    updated = datetime.fromisoformat(raw["updated_at"]).strftime("%B %d, %Y at %H:%M UTC")
+    updated = datetime.fromisoformat(raw["updated_at"]).strftime("%Y-%m-%d %H:%M UTC")
     rates_map: dict[str, list[dict]] = raw["rates"]
-    lines: list[str] = []
+    providers = _collect_providers(rates_map)
+    L: list[str] = []
 
-    lines.append("# 💱 Any Currency to BDT — Live Exchange Rates\n")
-    lines.append("> Compare live remittance rates to **BDT** from top transfer services.\n>")
-    lines.append(f"> 🔄 **Last updated:** {updated}\n>")
-    lines.append("> ⚙️ Auto-updated daily via GitHub Actions.\n")
+    # Header
+    L.append("# Any Currency to BDT")
+    L.append("")
+    L.append("Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly from provider websites.")
+    L.append("")
+    L.append(f"**Last updated:** `{updated}`")
+    L.append("")
 
-    nav = " | ".join(f"[{flag} {code}](#{code.lower()}-to-bdt)" for code, _, flag, _ in CURRENCIES)
-    lines.append(nav + "\n")
-    lines.append("---\n")
+    # Quick nav
+    L.append("## Currencies")
+    L.append("")
+    for code, symbol, flag, name in CURRENCIES:
+        count = len(rates_map.get(code, []))
+        label = "provider" if count == 1 else "providers"
+        L.append(f"- [{flag} **{code}** — {name}](#{code.lower()}-to-bdt) ({count} {label})")
+    L.append("")
 
+    # Rate tables
+    L.append("## Rates")
+    L.append("")
     for code, symbol, flag, name in CURRENCIES:
         rates = rates_map.get(code, [])
-        lines.append(f"### {flag} {code} to BDT\n")
+        L.append(f"### {code} to BDT")
+        L.append("")
         if not rates:
-            lines.append("> ⚠️ No rates available at this time.\n")
-        else:
-            best = rates[0]["rate"]
-            lines.append("| # | Provider | Rate | Delivery |")
-            lines.append("|:-:|----------|-----:|----------|")
-            for i, r in enumerate(rates, 1):
-                star = " ⭐" if r["rate"] == best else ""
-                fmt = f"**{r['rate']:.3f}**" if r["rate"] == best else f"{r['rate']:.3f}"
-                lines.append(f"| {i} | [{r['provider']}]({r['url']}){star} | {fmt} | {r['delivery']} |")
-            lines.append(f"\n> 1 {symbol} {code} = **{best:.3f} BDT** (best rate)\n")
-        lines.append("---\n")
+            L.append("No rates available.")
+            L.append("")
+            continue
+        best = rates[0]["rate"]
+        L.append(f"| # | Provider | 1 {code} = BDT | Delivery |")
+        L.append("|--:|----------|---------------:|----------|")
+        for i, r in enumerate(rates, 1):
+            is_best = r["rate"] == best
+            rank = f"**{i}**" if is_best else str(i)
+            rate_str = f"**{r['rate']:.3f}**" if is_best else f"{r['rate']:.3f}"
+            provider_str = f"[{r['provider']}]({r['url']})"
+            L.append(f"| {rank} | {provider_str} | {rate_str} | {r['delivery']} |")
+        L.append("")
 
-    lines.append("### Tracked Providers\n")
-    lines.append("- [Wise](https://wise.com)")
-    lines.append("- [Remitly](https://www.remitly.com)\n")
-    lines.append("> *More providers coming soon — PRs welcome!*\n")
-    lines.append("### Disclaimer\n")
-    lines.append(
-        "> This project is independent and not affiliated with any provider. "
-        "Rates are scraped from public pages and may differ from actual transfer rates. "
-        "Always confirm on the provider's site before sending money.\n")
-    lines.append(f"<sub>Last updated: {updated}</sub>\n")
-    return "\n".join(lines)
+    # Providers
+    L.append("## Providers")
+    L.append("")
+    L.append("| Provider | Source | Method |")
+    L.append("|----------|--------|--------|")
+    L.append("| [Wise](https://wise.com) | `wise.com/rates/live` | JSON endpoint |")
+    L.append("| [Remitly](https://www.remitly.com) | `remitly.com/{region}/en/bangladesh` | HTML scrape |")
+    L.append("")
+    L.append("Adding a provider? Write one async function in `fetch_rates.py` and append it to `SCRAPERS`.")
+    L.append("")
+
+    # How it works
+    L.append("## How it works")
+    L.append("")
+    L.append("```")
+    L.append("fetch_rates.py  →  rates.json  →  README.md")
+    L.append("     ↑                                 ↑")
+    L.append("  scrape providers              generated from JSON")
+    L.append("```")
+    L.append("")
+    L.append("A [GitHub Actions cron job](.github/workflows/update-rates.yml) runs this daily at `00:00 UTC` and commits the results.")
+    L.append("")
+
+    # Data
+    L.append("## Data")
+    L.append("")
+    L.append("Raw rate data is available in [`rates.json`](rates.json) for programmatic use:")
+    L.append("")
+    L.append("```json")
+    L.append('{')
+    L.append(f'  "updated_at": "{raw["updated_at"]}",')
+    L.append('  "target": "BDT",')
+    L.append('  "rates": {')
+    L.append('    "USD": [')
+    L.append('      { "provider": "Wise", "rate": 122.200, ... },')
+    L.append('      { "provider": "Remitly", "rate": 121.920, ... }')
+    L.append('    ],')
+    L.append('    ...')
+    L.append('  }')
+    L.append('}')
+    L.append("```")
+    L.append("")
+
+    # Disclaimer
+    L.append("## Disclaimer")
+    L.append("")
+    L.append("This project is independent and not affiliated with any remittance provider. Rates are scraped from publicly accessible pages and may not reflect actual transfer rates or fees. Always confirm on the provider's website before sending money.")
+    L.append("")
+
+    # Footer
+    L.append("---")
+    L.append("")
+    L.append(f"*Auto-generated on {updated}*")
+    L.append("")
+
+    return "\n".join(L)
+
+
+def _collect_providers(rates_map: dict[str, list[dict]]) -> set[str]:
+    providers: set[str] = set()
+    for rates in rates_map.values():
+        for r in rates:
+            providers.add(r["provider"])
+    return providers
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
