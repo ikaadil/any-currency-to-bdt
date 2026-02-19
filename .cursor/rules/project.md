@@ -37,7 +37,7 @@ All 3 steps happen in one `python fetch_rates.py` invocation.
 ## Key Design Decisions
 
 ### One file
-Everything lives in `fetch_rates.py` (~230 lines). No multi-file module structure — not needed at this scale and keeps it dead simple to understand and maintain.
+Everything lives in `fetch_rates.py` (~280 lines). No multi-file module structure — not needed at this scale and keeps it dead simple to understand and maintain.
 
 ### Parallel fetching
 All requests (12 currencies × N providers) fire simultaneously via `asyncio.gather`. This brings runtime from ~26s (sequential httpx) down to ~1.4s.
@@ -64,7 +64,27 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 ### Remitly
 - **Source**: `https://www.remitly.com/{country}/{lang}/bangladesh`
 - **Method**: Server-rendered HTML, rate extracted via regex `(\d{2,4}\.\d{1,6})\s*BDT`
-- **Coverage**: USD, GBP, EUR, CAD, AUD (5 regions where Remitly serves Bangladesh)
+- **Coverage**: USD, GBP, CAD, AUD (regions where Remitly serves Bangladesh)
+
+### TapTapSend
+- **Source**: `https://api.taptapsend.com/api/fxRates`
+- **Method**: Public JSON API, single call returns all corridors; cached per run
+- **Coverage**: USD, GBP, EUR, CAD, AUD, AED (corridors with BDT destination)
+- **Headers required**: `Appian-Version`, `X-Device-Id`, `X-Device-Model`
+
+### NALA
+- **Source**: `https://partners-api.prod.nala-api.com/v1/fx/rates`
+- **Method**: Public JSON API, returns rates for multiple providers; filter by `provider_name == "NALA"` and `destination_currency == "BDT"`; cached per run
+- **Coverage**: USD, GBP, EUR
+
+### Instarem
+- **Source**: `https://www.instarem.com/wp-json/instarem/v2/convert-rate/{src}/`
+- **Method**: WordPress REST API, returns conversion rates from source currency to all destinations; extract `BDT` from response
+- **Coverage**: All 12 currencies (mid-market rates)
+
+### Providers that cannot be scraped
+- **Elevate Pay**: Framer-based JS-rendered site, no accessible API, rate not in HTML
+- **MoneyGram**: API protected by Datadome CAPTCHA, all endpoints return 403
 
 ## Adding a New Provider
 

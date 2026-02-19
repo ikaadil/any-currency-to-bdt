@@ -155,7 +155,86 @@ async def scrape_taptapsend(session: aiohttp.ClientSession, src: str) -> Rate | 
         return None
 
 
-SCRAPERS = [scrape_wise, scrape_remitly, scrape_taptapsend]
+# ── NALA ─────────────────────────────────────────────────────────────────────
+
+NALA_API = "https://partners-api.prod.nala-api.com/v1/fx/rates"
+NALA_URL = "https://www.nala.com/country/bangladesh"
+
+_nala_cache: dict[str, float] | None = None
+
+
+async def _load_nala(session: aiohttp.ClientSession) -> dict[str, float]:
+    global _nala_cache
+    if _nala_cache is not None:
+        return _nala_cache
+
+    rates: dict[str, float] = {}
+    try:
+        async with session.get(NALA_API, timeout=aiohttp.ClientTimeout(total=10)) as r:
+            if r.status != 200:
+                return rates
+            data = await r.json(content_type=None)
+            for entry in data.get("data", []):
+                if entry.get("destination_currency") == "BDT" and entry.get("provider_name") == "NALA":
+                    rates[entry["source_currency"]] = float(entry["rate"])
+    except Exception as e:
+        print(f"  [NALA] load failed: {e}")
+
+    _nala_cache = rates
+    return rates
+
+
+async def scrape_nala(session: aiohttp.ClientSession, src: str) -> Rate | None:
+    try:
+        rate = (await _load_nala(session)).get(src)
+        if rate is None:
+            return None
+        return Rate("NALA", NALA_URL, round(rate, 3), "Bank, Mobile Wallet")
+    except Exception as e:
+        print(f"  [NALA] {src}: {e}")
+        return None
+
+
+# ── Instarem ─────────────────────────────────────────────────────────────────
+
+INSTAREM_API = "https://www.instarem.com/wp-json/instarem/v2/convert-rate"
+
+_instarem_cache: dict[str, float] = {}
+
+
+async def _load_instarem(session: aiohttp.ClientSession, src: str) -> float | None:
+    if src in _instarem_cache:
+        return _instarem_cache[src]
+
+    try:
+        url = f"{INSTAREM_API}/{src.lower()}/"
+        async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as r:
+            if r.status != 200:
+                return None
+            data = await r.json(content_type=None)
+            rates = data.get("data", {}) if data.get("status") else data
+            bdt = rates.get("BDT")
+            if bdt is not None:
+                _instarem_cache[src] = float(bdt)
+                return _instarem_cache[src]
+    except Exception as e:
+        print(f"  [Instarem] load {src}: {e}")
+    return None
+
+
+async def scrape_instarem(session: aiohttp.ClientSession, src: str) -> Rate | None:
+    try:
+        rate = await _load_instarem(session, src)
+        if rate is None:
+            return None
+        url = f"https://www.instarem.com/en-us/currency-conversion/{src.lower()}-to-bdt/"
+        return Rate("Instarem", url, round(rate, 3), "Bank")
+    except Exception as e:
+        print(f"  [Instarem] {src}: {e}")
+        return None
+
+
+SCRAPERS = [scrape_wise, scrape_remitly, scrape_taptapsend, scrape_nala, scrape_instarem]
 
 
 # ── Fetch (all currencies × all providers in parallel) ───────────────────────
