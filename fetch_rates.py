@@ -74,7 +74,7 @@ async def scrape_wise(client: httpx.AsyncClient, src: str) -> Rate | None:
         region = WISE_REGION.get(src, "us")
         return Rate("Wise",
                      f"https://wise.com/{region}/currency-converter/{src.lower()}-to-bdt-rate",
-                     round(float(val), 2), "Bank")
+                     round(float(val), 3), "Bank")
     except Exception as e:
         print(f"  [Wise] {src}: {e}")
         return None
@@ -94,7 +94,7 @@ async def scrape_remitly(client: httpx.AsyncClient, src: str) -> Rate | None:
         matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
         if not matches:
             return None
-        return Rate("Remitly", url, round(max(float(m) for m in matches), 2),
+        return Rate("Remitly", url, round(max(float(m) for m in matches), 3),
                      "Bank, Mobile Wallet, Cash Pickup")
     except Exception as e:
         print(f"  [Remitly] {src}: {e}")
@@ -154,9 +154,9 @@ def build_readme(raw: dict) -> str:
             lines.append("|:-:|----------|-----:|----------|")
             for i, r in enumerate(rates, 1):
                 star = " ⭐" if r["rate"] == best else ""
-                fmt = f"**{r['rate']:.2f}**" if r["rate"] == best else f"{r['rate']:.2f}"
+                fmt = f"**{r['rate']:.3f}**" if r["rate"] == best else f"{r['rate']:.3f}"
                 lines.append(f"| {i} | [{r['provider']}]({r['url']}){star} | {fmt} | {r['delivery']} |")
-            lines.append(f"\n> 1 {symbol} {code} = **{best:.2f} BDT** (best rate)\n")
+            lines.append(f"\n> 1 {symbol} {code} = **{best:.3f} BDT** (best rate)\n")
         lines.append("---\n")
 
     lines.append("### Tracked Providers\n")
