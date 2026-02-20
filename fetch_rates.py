@@ -116,6 +116,9 @@ class Provider(ABC):
             print(f"  [{self.name}] {src}: {e}")
             return None
 
+    async def cleanup(self) -> None:
+        """Release resources (e.g. browser). Override if needed."""
+
 
 # ── Providers ────────────────────────────────────────────────────────────────
 
@@ -271,6 +274,88 @@ class Instarem(Provider):
         return f"https://www.instarem.com/en-us/currency-conversion/{src.lower()}-to-bdt/"
 
 
+class WesternUnion(Provider):
+    """Scrapes WU's currency converter pages using a headless browser.
+
+    WU's APIs require Akamai Bot Manager tokens, so we launch a real
+    Chromium instance via Playwright, navigate to each converter page,
+    and read the FX rate from the rendered DOM.
+    """
+
+    name = "Western Union"
+    url = "https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html"
+    delivery = "Bank, Cash Pickup, Mobile Wallet"
+
+    _REGIONS: ClassVar[dict[str, str]] = {
+        "USD": "us", "GBP": "gb", "EUR": "de", "CAD": "ca", "AUD": "au",
+        "SGD": "sg", "JPY": "jp",
+    }
+
+    def __init__(self):
+        self._pw: object | None = None
+        self._browser: object | None = None
+        self._page: object | None = None
+        self._lock = asyncio.Lock()
+
+    async def _ensure_browser(self):
+        if self._browser is not None:
+            return
+        from playwright.async_api import async_playwright
+        self._pw = await async_playwright().start()
+        self._browser = await self._pw.chromium.launch(
+            headless=True,
+            args=["--disable-blink-features=AutomationControlled"],
+        )
+        ctx = await self._browser.new_context(
+            viewport={"width": 1440, "height": 900},
+            user_agent=HEADERS["User-Agent"],
+            locale="en-US",
+        )
+        self._page = await ctx.new_page()
+        await self._page.add_init_script(
+            "Object.defineProperty(navigator, 'webdriver', "
+            "{ get: () => undefined });"
+        )
+
+    async def fetch_rate(self, session, src):
+        if src not in self._REGIONS:
+            return None
+        async with self._lock:
+            await self._ensure_browser()
+            region = self._REGIONS[src]
+            url = (
+                f"https://www.westernunion.com/{region}/en/"
+                f"currency-converter/{src.lower()}-to-bdt-rate.html"
+            )
+            page = self._page
+            await page.goto(url, wait_until="domcontentloaded", timeout=20000)
+            # Poll for the FX text to appear (max ~8s)
+            for _ in range(16):
+                text = await page.text_content("body") or ""
+                m = re.search(
+                    rf"FX:\s*1\.00\s*{src}\s*[–\-]\s*([\d,.]+)\s*BDT", text
+                )
+                if m:
+                    return float(m.group(1).replace(",", ""))
+                await asyncio.sleep(0.5)
+            return None
+
+    def get_url(self, src):
+        region = self._REGIONS.get(src, "us")
+        return (
+            f"https://www.westernunion.com/{region}/en/"
+            f"currency-converter/{src.lower()}-to-bdt-rate.html"
+        )
+
+    async def cleanup(self) -> None:
+        if self._browser:
+            await self._browser.close()
+            self._browser = None
+        if self._pw:
+            await self._pw.stop()
+            self._pw = None
+
+
 # ── Runner ───────────────────────────────────────────────────────────────────
 
 
@@ -296,6 +381,9 @@ async def fetch_all() -> dict:
             for provider in _providers
         ]
         results = await asyncio.gather(*tasks)
+
+    for provider in _providers:
+        await provider.cleanup()
 
     for code, rate in results:
         if rate:
