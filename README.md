@@ -2,7 +2,7 @@
 
 Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly from provider websites.
 
-**Last updated:** `2026-02-20 20:44 UTC`
+**Last updated:** `2026-02-20 21:01 UTC`
 
 ## Rates
 
@@ -16,6 +16,7 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 | 4 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 121.920 | Bank, Mobile Wallet, Cash Pickup |
 | 5 | [NALA](https://www.nala.com/country/bangladesh) | 121.156 | Bank, Mobile Wallet |
 | 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.000 | Bank, Mobile Wallet |
+| 7 | [WorldRemit](https://www.worldremit.com/en-us/bangladesh) | 120.751 | Bank, Mobile Wallet, Cash Pickup |
 
 ### GBP to BDT
 
@@ -23,47 +24,51 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 |--:|----------|---------------:|----------|
 | **1** | [Western Union](https://www.westernunion.com/gb/en/currency-converter/gbp-to-bdt-rate.html) | **165.794** | Bank, Cash Pickup, Mobile Wallet |
 | 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 164.869 | Bank |
-| 3 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 164.823 | Bank |
-| 4 | [Remitly](https://www.remitly.com/gb/en/bangladesh) | 164.760 | Bank, Mobile Wallet, Cash Pickup |
+| 3 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 164.836 | Bank |
+| 4 | [Remitly](https://www.remitly.com/gb/en/bangladesh) | 164.780 | Bank, Mobile Wallet, Cash Pickup |
 | 5 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 163.000 | Bank, Mobile Wallet |
-| 6 | [NALA](https://www.nala.com/country/bangladesh) | 162.764 | Bank, Mobile Wallet |
+| 6 | [NALA](https://www.nala.com/country/bangladesh) | 162.759 | Bank, Mobile Wallet |
+| 7 | [WorldRemit](https://www.worldremit.com/en-gb/bangladesh) | 159.565 | Bank, Mobile Wallet, Cash Pickup |
 
 ### EUR to BDT
 
 | # | Provider | 1 EUR = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | **144.080** | Bank, Mobile Wallet |
-| 2 | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | 144.013 | Bank |
+| 2 | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | 144.025 | Bank |
 | 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/eur-to-bdt/) | 144.007 | Bank |
-| 4 | [NALA](https://www.nala.com/country/bangladesh) | 142.769 | Bank, Mobile Wallet |
-| 5 | [Western Union](https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html) | 140.678 | Bank, Cash Pickup, Mobile Wallet |
+| 4 | [NALA](https://www.nala.com/country/bangladesh) | 142.753 | Bank, Mobile Wallet |
+| 5 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 140.709 | Bank, Cash Pickup, Mobile Wallet |
+| 6 | [Western Union](https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html) | 140.678 | Bank, Cash Pickup, Mobile Wallet |
 
 ### CAD to BDT
 
 | # | Provider | 1 CAD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | **89.305** | Bank |
-| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/cad-to-bdt/) | 89.296 | Bank |
+| **1** | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | **89.301** | Bank |
+| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/cad-to-bdt/) | 89.293 | Bank |
 | 3 | [Remitly](https://www.remitly.com/ca/en/bangladesh) | 89.280 | Bank, Mobile Wallet, Cash Pickup |
 | 4 | [Western Union](https://www.westernunion.com/ca/en/currency-converter/cad-to-bdt-rate.html) | 88.852 | Bank, Cash Pickup, Mobile Wallet |
 | 5 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 88.250 | Bank, Mobile Wallet |
+| 6 | [WorldRemit](https://www.worldremit.com/en-ca/bangladesh) | 86.315 | Bank, Mobile Wallet, Cash Pickup |
 
 ### AUD to BDT
 
 | # | Provider | 1 AUD = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Western Union](https://www.westernunion.com/au/en/currency-converter/aud-to-bdt-rate.html) | **88.934** | Bank, Cash Pickup, Mobile Wallet |
-| 2 | [Remitly](https://www.remitly.com/au/en/bangladesh) | 88.010 | Bank, Mobile Wallet, Cash Pickup |
+| 2 | [Remitly](https://www.remitly.com/au/en/bangladesh) | 88.020 | Bank, Mobile Wallet, Cash Pickup |
 | 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/aud-to-bdt/) | 86.563 | Bank |
-| 4 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.560 | Bank |
-| 5 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 85.250 | Bank, Mobile Wallet |
+| 4 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.554 | Bank |
+| 5 | [WorldRemit](https://www.worldremit.com/en-au/bangladesh) | 86.056 | Bank, Mobile Wallet, Cash Pickup |
+| 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 85.250 | Bank, Mobile Wallet |
 
 ### SGD to BDT
 
 | # | Provider | 1 SGD = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Western Union](https://www.westernunion.com/sg/en/currency-converter/sgd-to-bdt-rate.html) | **97.331** | Bank, Cash Pickup, Mobile Wallet |
-| 2 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 96.471 | Bank |
+| 2 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 96.490 | Bank |
 | 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | 96.464 | Bank |
 
 ### AED to BDT
@@ -85,7 +90,7 @@ Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly f
 
 | # | Provider | 1 SAR = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Instarem](https://www.instarem.com/en-us/currency-conversion/sar-to-bdt/) | **32.580** | Bank |
+| **1** | [Instarem](https://www.instarem.com/en-us/currency-conversion/sar-to-bdt/) | **32.579** | Bank |
 | 2 | [Wise](https://wise.com/sa/currency-converter/sar-to-bdt-rate) | 32.577 | Bank |
 
 ### KWD to BDT
@@ -116,7 +121,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-20T20:44:59.769183+00:00",
+  "updated_at": "2026-02-20T21:01:31.756935+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -134,4 +139,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-20 20:44 UTC*
+*Auto-generated on 2026-02-20 21:01 UTC*

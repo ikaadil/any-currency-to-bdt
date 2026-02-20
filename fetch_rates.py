@@ -25,6 +25,7 @@ import re
 import ssl
 import time
 from abc import ABC, abstractmethod
+from contextlib import asynccontextmanager
 from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -67,6 +68,82 @@ class Rate:
     url: str
     rate: float
     delivery: str
+
+
+# ── Browser pool (shared Chromium for all browser-based providers) ────────────
+
+
+class BrowserPool:
+    """Single Chromium instance with a semaphore-controlled page pool.
+
+    Avoids launching multiple browsers and serialises page usage to *max_pages*
+    concurrent tabs.  Lazy-starts on first ``page()`` call.
+    """
+
+    def __init__(self, max_pages: int = 8):
+        self._sem = asyncio.Semaphore(max_pages)
+        self._pw: object | None = None
+        self._browser: object | None = None
+        self._context: object | None = None
+        self._started = False
+        self._init_lock = asyncio.Lock()
+
+    async def _start(self) -> None:
+        if self._started:
+            return
+        async with self._init_lock:
+            if self._started:
+                return
+            from playwright.async_api import async_playwright
+
+            self._pw = await async_playwright().start()
+            self._browser = await self._pw.chromium.launch(
+                headless=True,
+                args=["--disable-blink-features=AutomationControlled"],
+            )
+            self._context = await self._browser.new_context(
+                viewport={"width": 1440, "height": 900},
+                user_agent=HEADERS["User-Agent"],
+                locale="en-US",
+            )
+            await self._context.add_init_script(
+                "Object.defineProperty(navigator, 'webdriver', "
+                "{ get: () => undefined });"
+            )
+            self._started = True
+
+    _BLOCKED = {"image", "media", "font", "stylesheet"}
+
+    @asynccontextmanager
+    async def page(self):
+        """Yield a fresh browser page, then close it."""
+        await self._start()
+        async with self._sem:
+            p = await self._context.new_page()
+            await p.route(
+                "**/*",
+                lambda route: (
+                    route.abort()
+                    if route.request.resource_type in self._BLOCKED
+                    else route.continue_()
+                ),
+            )
+            try:
+                yield p
+            finally:
+                await p.close()
+
+    async def stop(self) -> None:
+        if self._browser:
+            await self._browser.close()
+            self._browser = None
+        if self._pw:
+            await self._pw.stop()
+            self._pw = None
+        self._started = False
+
+
+_pool = BrowserPool()
 
 
 # ── Provider base class ──────────────────────────────────────────────────────
@@ -116,8 +193,6 @@ class Provider(ABC):
             print(f"  [{self.name}] {src}: {e}")
             return None
 
-    async def cleanup(self) -> None:
-        """Release resources (e.g. browser). Override if needed."""
 
 
 # ── Providers ────────────────────────────────────────────────────────────────
@@ -275,12 +350,7 @@ class Instarem(Provider):
 
 
 class WesternUnion(Provider):
-    """Scrapes WU's currency converter pages using a headless browser.
-
-    WU's APIs require Akamai Bot Manager tokens, so we launch a real
-    Chromium instance via Playwright, navigate to each converter page,
-    and read the FX rate from the rendered DOM.
-    """
+    """Scrapes WU's currency converter pages via the shared browser pool."""
 
     name = "Western Union"
     url = "https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html"
@@ -291,54 +361,25 @@ class WesternUnion(Provider):
         "SGD": "sg", "JPY": "jp",
     }
 
-    def __init__(self):
-        self._pw: object | None = None
-        self._browser: object | None = None
-        self._page: object | None = None
-        self._lock = asyncio.Lock()
-
-    async def _ensure_browser(self):
-        if self._browser is not None:
-            return
-        from playwright.async_api import async_playwright
-        self._pw = await async_playwright().start()
-        self._browser = await self._pw.chromium.launch(
-            headless=True,
-            args=["--disable-blink-features=AutomationControlled"],
-        )
-        ctx = await self._browser.new_context(
-            viewport={"width": 1440, "height": 900},
-            user_agent=HEADERS["User-Agent"],
-            locale="en-US",
-        )
-        self._page = await ctx.new_page()
-        await self._page.add_init_script(
-            "Object.defineProperty(navigator, 'webdriver', "
-            "{ get: () => undefined });"
-        )
-
     async def fetch_rate(self, session, src):
         if src not in self._REGIONS:
             return None
-        async with self._lock:
-            await self._ensure_browser()
-            region = self._REGIONS[src]
-            url = (
-                f"https://www.westernunion.com/{region}/en/"
-                f"currency-converter/{src.lower()}-to-bdt-rate.html"
-            )
-            page = self._page
+        region = self._REGIONS[src]
+        url = (
+            f"https://www.westernunion.com/{region}/en/"
+            f"currency-converter/{src.lower()}-to-bdt-rate.html"
+        )
+        async with _pool.page() as page:
             await page.goto(url, wait_until="domcontentloaded", timeout=20000)
-            # Poll for the FX text to appear (max ~8s)
             for _ in range(16):
                 text = await page.text_content("body") or ""
                 m = re.search(
-                    rf"FX:\s*1\.00\s*{src}\s*[–\-]\s*([\d,.]+)\s*BDT", text
+                    rf"FX:\s*1\.00\s*{src}\s*[–\-]\s*([\d,.]+)\s*BDT", text,
                 )
                 if m:
                     return float(m.group(1).replace(",", ""))
                 await asyncio.sleep(0.5)
-            return None
+        return None
 
     def get_url(self, src):
         region = self._REGIONS.get(src, "us")
@@ -347,13 +388,79 @@ class WesternUnion(Provider):
             f"currency-converter/{src.lower()}-to-bdt-rate.html"
         )
 
-    async def cleanup(self) -> None:
-        if self._browser:
-            await self._browser.close()
-            self._browser = None
-        if self._pw:
-            await self._pw.stop()
-            self._pw = None
+
+class WorldRemit(Provider):
+    """Scrapes WorldRemit's send-money pages via the shared browser pool."""
+
+    name = "WorldRemit"
+    url = "https://www.worldremit.com/en-us/bangladesh"
+    delivery = "Bank, Mobile Wallet, Cash Pickup"
+
+    _REGIONS: ClassVar[dict[str, str]] = {
+        "USD": "en-us", "GBP": "en-gb", "EUR": "en-de", "CAD": "en-ca",
+        "AUD": "en-au", "SGD": "en-sg",
+    }
+
+    async def fetch_rate(self, session, src):
+        region = self._REGIONS.get(src)
+        if not region:
+            return None
+        url = f"https://www.worldremit.com/{region}/bangladesh"
+        async with _pool.page() as page:
+            await page.goto(url, wait_until="domcontentloaded", timeout=15000)
+            for _ in range(14):
+                text = await page.text_content("body") or ""
+                m = re.search(
+                    rf"1\s*{src}\s*=\s*([\d,.]+)\s*BDT", text,
+                )
+                if m:
+                    return float(m.group(1).replace(",", ""))
+                await asyncio.sleep(0.5)
+        return None
+
+    def get_url(self, src):
+        region = self._REGIONS.get(src, "en-us")
+        return f"https://www.worldremit.com/{region}/bangladesh"
+
+
+class Xoom(Provider):
+    """Scrapes Xoom (PayPal) send-money pages via the shared browser pool.
+
+    Xoom auto-detects the sending currency from IP geolocation. We load the
+    page once, detect which currency is displayed, and cache that single rate.
+    """
+
+    name = "Xoom"
+    url = "https://www.xoom.com/bangladesh/send-money"
+    delivery = "Bank, Cash Pickup, Mobile Wallet"
+
+    def __init__(self):
+        self._cache: dict[str, float] = {}
+        self._loaded = False
+        self._load_lock = asyncio.Lock()
+
+    async def _load(self) -> None:
+        if self._loaded:
+            return
+        async with self._load_lock:
+            if self._loaded:
+                return
+            async with _pool.page() as page:
+                await page.goto(self.url, wait_until="domcontentloaded", timeout=15000)
+                for _ in range(14):
+                    text = await page.text_content("body") or ""
+                    m = re.search(
+                        r"1\s+([A-Z]{3})\s*=\s*([\d,.]+)\s*BDT", text,
+                    )
+                    if m:
+                        self._cache[m.group(1)] = float(m.group(2).replace(",", ""))
+                        break
+                    await asyncio.sleep(0.5)
+            self._loaded = True
+
+    async def fetch_rate(self, session, src):
+        await self._load()
+        return self._cache.get(src)
 
 
 # ── Runner ───────────────────────────────────────────────────────────────────
@@ -382,8 +489,7 @@ async def fetch_all() -> dict:
         ]
         results = await asyncio.gather(*tasks)
 
-    for provider in _providers:
-        await provider.cleanup()
+    await _pool.stop()
 
     for code, rate in results:
         if rate:
