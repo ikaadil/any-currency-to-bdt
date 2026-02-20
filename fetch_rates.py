@@ -349,6 +349,79 @@ class Instarem(Provider):
         return f"https://www.instarem.com/en-us/currency-conversion/{src.lower()}-to-bdt/"
 
 
+class SendWave(Provider):
+    name = "SendWave"
+    url = "https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd"
+    delivery = "Bank, Mobile Wallet"
+
+    _API = "https://app.sendwave.com/v2/pricing-public"
+    _CORRIDORS: ClassVar[dict[str, tuple[str, str]]] = {
+        "USD": ("US", "USD"), "GBP": ("GB", "GBP"),
+        "EUR": ("DE", "EUR"), "CAD": ("CA", "CAD"),
+    }
+
+    async def fetch_rate(self, session, src):
+        corridor = self._CORRIDORS.get(src)
+        if not corridor:
+            return None
+        country, curr = corridor
+        params = {
+            "amount": "100",
+            "amountType": "SEND",
+            "sendCountryIso2": country,
+            "sendCurrency": curr,
+            "receiveCountryIso2": "BD",
+            "receiveCurrency": "BDT",
+        }
+        async with session.get(self._API, params=params, timeout=TIMEOUT) as r:
+            if r.status != 200:
+                return None
+            data = await r.json(content_type=None)
+            rate = data.get("baseExchangeRate")
+            return float(rate) if rate else None
+
+    def get_url(self, src):
+        corridor = self._CORRIDORS.get(src)
+        if corridor:
+            country, curr = corridor
+            return f"https://www.sendwave.com/en/currency-converter/{curr.lower()}_{country.lower()}-bdt_bd"
+        return self.url
+
+
+class Paysend(Provider):
+    name = "Paysend"
+    url = "https://paysend.com/en-us/send-money/from-the-united-states-of-america-to-bangladesh"
+    delivery = "Bank, Card"
+
+    _REGIONS: ClassVar[dict[str, tuple[str, str]]] = {
+        "USD": ("en-us", "the-united-states-of-america"),
+        "EUR": ("en-us", "germany"),
+        "CAD": ("en-ca", "canada"),
+        "AUD": ("en-au", "australia"),
+    }
+
+    async def fetch_rate(self, session, src):
+        region = self._REGIONS.get(src)
+        if not region:
+            return None
+        locale, country = region
+        url = f"https://paysend.com/{locale}/send-money/from-{country}-to-bangladesh"
+        async with session.get(url, timeout=TIMEOUT) as r:
+            if r.status != 200:
+                return None
+            html = await r.text()
+            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+            m = re.search(rf"1\.00\s+{src}\s*=\s*([\d.]+)\s*BDT", text)
+            if m:
+                return float(m.group(1))
+            return None
+
+    def get_url(self, src):
+        region = self._REGIONS.get(src, ("en-us", "the-united-states-of-america"))
+        locale, country = region
+        return f"https://paysend.com/{locale}/send-money/from-{country}-to-bangladesh"
+
+
 class WesternUnion(Provider):
     """Scrapes WU's currency converter pages via the shared browser pool."""
 
