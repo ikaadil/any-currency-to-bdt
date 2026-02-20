@@ -1,8 +1,12 @@
 # Any Currency to BDT
 
-Live remittance exchange rates to **Bangladeshi Taka (BDT)**, scraped directly from provider websites.
+**Compare live remittance rates to Bangladesh (BDT)** — Wise, Remitly, Western Union, SendWave, and 7+ providers in one place. See who gives the best rate for USD, GBP, EUR, CAD, AUD, and more. Auto-updated hourly. Open source, no sign-up, no ads.
 
 **Last updated:** `2026-02-20 21:54 UTC`
+
+## Why this exists
+
+Sending money to Bangladesh? Provider sites show one rate at a time. This repo **scrapes 10+ providers** (Wise, Remitly, Western Union, WorldRemit, SendWave, Paysend, NALA, TapTapSend, Instarem, Xoom) and **ranks them by rate** for each currency — so you can pick the best deal in seconds. Data is refreshed every hour via GitHub Actions. Use the tables below or grab [`rates.json`](rates.json) for your own app.
 
 ## Rates
 

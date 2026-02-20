@@ -628,12 +628,22 @@ def build_readme(raw: dict) -> str:
 
     lines.append("# Any Currency to BDT")
     lines.append("")
-    lines.append("Live remittance exchange rates to **Bangladeshi Taka (BDT)**,"
-                  " scraped directly from provider websites.")
+    lines.append("**Compare live remittance rates to Bangladesh (BDT)** — Wise, Remitly,"
+                  " Western Union, SendWave, and 7+ providers in one place. See who gives"
+                  " the best rate for USD, GBP, EUR, CAD, AUD, and more. Auto-updated"
+                  " hourly. Open source, no sign-up, no ads.")
     lines.append("")
     lines.append(f"**Last updated:** `{updated}`")
     lines.append("")
-
+    lines.append("## Why this exists")
+    lines.append("")
+    lines.append("Sending money to Bangladesh? Provider sites show one rate at a time."
+                  " This repo **scrapes 10+ providers** (Wise, Remitly, Western Union,"
+                  " WorldRemit, SendWave, Paysend, NALA, TapTapSend, Instarem, Xoom) and"
+                  " **ranks them by rate** for each currency — so you can pick the best"
+                  " deal in seconds. Data is refreshed every hour via GitHub Actions."
+                  " Use the tables below or grab [`rates.json`](rates.json) for your own app.")
+    lines.append("")
     lines.append("## Rates")
     lines.append("")
     for code, symbol, flag, name in CURRENCIES:
@@ -683,7 +693,6 @@ def build_readme(raw: dict) -> str:
                   " or fees. Always confirm on the provider's website before"
                   " sending money.")
     lines.append("")
-
     lines.append("---")
     lines.append("")
     lines.append(f"*Auto-generated on {updated}*")
