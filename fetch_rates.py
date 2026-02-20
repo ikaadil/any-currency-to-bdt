@@ -80,7 +80,7 @@ class BrowserPool:
     concurrent tabs.  Lazy-starts on first ``page()`` call.
     """
 
-    def __init__(self, max_pages: int = 8):
+    def __init__(self, max_pages: int = 12):
         self._sem = asyncio.Semaphore(max_pages)
         self._pw: object | None = None
         self._browser: object | None = None
@@ -113,6 +113,13 @@ class BrowserPool:
             self._started = True
 
     _BLOCKED = {"image", "media", "font", "stylesheet"}
+    _BLOCKED_DOMAINS = {
+        "google-analytics.com", "googletagmanager.com", "facebook.net",
+        "doubleclick.net", "hotjar.com", "segment.io", "segment.com",
+        "newrelic.com", "nr-data.net", "sentry.io", "datadoghq.com",
+        "optimizely.com", "amplitude.com", "mixpanel.com", "braze.com",
+        "appsflyer.com", "branch.io", "mparticle.com",
+    }
 
     @asynccontextmanager
     async def page(self):
@@ -120,12 +127,18 @@ class BrowserPool:
         await self._start()
         async with self._sem:
             p = await self._context.new_page()
+
+            def _should_block(route):
+                req = route.request
+                if req.resource_type in self._BLOCKED:
+                    return True
+                url = req.url
+                return any(d in url for d in self._BLOCKED_DOMAINS)
+
             await p.route(
                 "**/*",
                 lambda route: (
-                    route.abort()
-                    if route.request.resource_type in self._BLOCKED
-                    else route.continue_()
+                    route.abort() if _should_block(route) else route.continue_()
                 ),
             )
             try:
@@ -442,17 +455,21 @@ class WesternUnion(Provider):
             f"https://www.westernunion.com/{region}/en/"
             f"currency-converter/{src.lower()}-to-bdt-rate.html"
         )
+        js = """
+            () => {
+                const m = document.body.innerText.match(
+                    /FX:\\s*1\\.00\\s*%s\\s*[–\\-]\\s*([\\d,]+\\.\\d+)\\s*BDT/
+                );
+                return m ? parseFloat(m[1].replace(/,/g, '')) : null;
+            }
+        """ % src
         async with _pool.page() as page:
-            await page.goto(url, wait_until="domcontentloaded", timeout=20000)
-            for _ in range(16):
-                text = await page.text_content("body") or ""
-                m = re.search(
-                    rf"FX:\s*1\.00\s*{src}\s*[–\-]\s*([\d,.]+)\s*BDT", text,
-                )
-                if m:
-                    return float(m.group(1).replace(",", ""))
-                await asyncio.sleep(0.5)
-        return None
+            await page.goto(url, wait_until="domcontentloaded", timeout=10000)
+            try:
+                handle = await page.wait_for_function(js, timeout=6000)
+                return await handle.json_value()
+            except Exception:
+                return None
 
     def get_url(self, src):
         region = self._REGIONS.get(src, "us")
@@ -470,8 +487,7 @@ class WorldRemit(Provider):
     delivery = "Bank, Mobile Wallet, Cash Pickup"
 
     _REGIONS: ClassVar[dict[str, str]] = {
-        "USD": "en-us", "GBP": "en-gb", "EUR": "en-de", "CAD": "en-ca",
-        "AUD": "en-au", "SGD": "en-sg",
+        "USD": "en-us", "GBP": "en-gb", "CAD": "en-ca", "AUD": "en-au",
     }
 
     async def fetch_rate(self, session, src):
@@ -479,17 +495,21 @@ class WorldRemit(Provider):
         if not region:
             return None
         url = f"https://www.worldremit.com/{region}/bangladesh"
+        js = """
+            () => {
+                const m = document.body.innerText.match(
+                    /1\\s*%s\\s*=\\s*([\\d,]+\\.\\d+)\\s*BDT/
+                );
+                return m ? parseFloat(m[1].replace(/,/g, '')) : null;
+            }
+        """ % src
         async with _pool.page() as page:
-            await page.goto(url, wait_until="domcontentloaded", timeout=15000)
-            for _ in range(14):
-                text = await page.text_content("body") or ""
-                m = re.search(
-                    rf"1\s*{src}\s*=\s*([\d,.]+)\s*BDT", text,
-                )
-                if m:
-                    return float(m.group(1).replace(",", ""))
-                await asyncio.sleep(0.5)
-        return None
+            await page.goto(url, wait_until="domcontentloaded", timeout=10000)
+            try:
+                handle = await page.wait_for_function(js, timeout=6000)
+                return await handle.json_value()
+            except Exception:
+                return None
 
     def get_url(self, src):
         region = self._REGIONS.get(src, "en-us")
@@ -507,6 +527,15 @@ class Xoom(Provider):
     url = "https://www.xoom.com/bangladesh/send-money"
     delivery = "Bank, Cash Pickup, Mobile Wallet"
 
+    _JS = """
+        () => {
+            const m = document.body.innerText.match(
+                /1\\s+([A-Z]{3})\\s*=\\s*([\\d,]+\\.\\d+)\\s*BDT/
+            );
+            return m ? [m[1], parseFloat(m[2].replace(/,/g, ''))] : null;
+        }
+    """
+
     def __init__(self):
         self._cache: dict[str, float] = {}
         self._loaded = False
@@ -519,16 +548,14 @@ class Xoom(Provider):
             if self._loaded:
                 return
             async with _pool.page() as page:
-                await page.goto(self.url, wait_until="domcontentloaded", timeout=15000)
-                for _ in range(14):
-                    text = await page.text_content("body") or ""
-                    m = re.search(
-                        r"1\s+([A-Z]{3})\s*=\s*([\d,.]+)\s*BDT", text,
-                    )
-                    if m:
-                        self._cache[m.group(1)] = float(m.group(2).replace(",", ""))
-                        break
-                    await asyncio.sleep(0.5)
+                await page.goto(self.url, wait_until="domcontentloaded", timeout=10000)
+                try:
+                    handle = await page.wait_for_function(self._JS, timeout=6000)
+                    pair = await handle.json_value()
+                    if pair:
+                        self._cache[pair[0]] = pair[1]
+                except Exception:
+                    pass
             self._loaded = True
 
     async def fetch_rate(self, session, src):
@@ -548,6 +575,10 @@ async def _fetch_one(
     return (code, result)
 
 
+def _needs_browser(provider: Provider) -> bool:
+    return isinstance(provider, (WesternUnion, WorldRemit, Xoom))
+
+
 async def fetch_all() -> dict:
     now = datetime.now(timezone.utc).isoformat()
     data: dict[str, list[dict]] = {code: [] for code, *_ in CURRENCIES}
@@ -555,12 +586,25 @@ async def fetch_all() -> dict:
     ssl_ctx = ssl.create_default_context(cafile=certifi.where())
     conn = aiohttp.TCPConnector(ssl=ssl_ctx)
     async with aiohttp.ClientSession(headers=HEADERS, connector=conn) as session:
-        tasks = [
+        http_tasks = [
             _fetch_one(session, provider, code)
             for code, *_ in CURRENCIES
             for provider in _providers
+            if not _needs_browser(provider)
         ]
-        results = await asyncio.gather(*tasks)
+        browser_tasks = [
+            _fetch_one(session, provider, code)
+            for code, *_ in CURRENCIES
+            for provider in _providers
+            if _needs_browser(provider)
+        ]
+        # Pre-warm the browser while HTTP tasks run
+        results = await asyncio.gather(
+            _pool._start(),
+            *http_tasks,
+            *browser_tasks,
+        )
+        results = results[1:]  # drop _start() result
 
     await _pool.stop()
 

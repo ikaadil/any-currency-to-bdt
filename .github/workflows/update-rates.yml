@@ -21,10 +21,22 @@ jobs:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-          python -m playwright install --with-deps chromium
+      - name: Install Python packages
+        run: pip install -r requirements.txt
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ hashFiles('requirements.txt') }}
+
+      - name: Install Playwright Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: python -m playwright install chromium
+
+      - name: Install Playwright system deps
+        run: python -m playwright install-deps chromium
 
       - name: Run fetcher script
         run: python fetch_rates.py
