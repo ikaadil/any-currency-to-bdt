@@ -2,7 +2,7 @@
 
 **Compare live remittance rates to Bangladesh (BDT)** — Wise, Remitly, Western Union, SendWave, and 7+ providers in one place. See who gives the best rate for USD, GBP, EUR, CAD, AUD, and more. Auto-updated hourly. Open source, no sign-up, no ads.
 
-**Last updated:** `2026-02-21 18:17 UTC`
+**Last updated:** `2026-02-21 19:15 UTC`
 
 ## Why this exists
 
@@ -133,7 +133,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-21T18:17:10.746124+00:00",
+  "updated_at": "2026-02-21T19:15:39.424383+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -151,4 +151,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-21 18:17 UTC*
+*Auto-generated on 2026-02-21 19:15 UTC*
