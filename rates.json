@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-02-21T07:23:08.153791+00:00",
+    "updated_at": "2026-02-21T08:15:40.440816+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
@@ -116,12 +116,6 @@
         ],
         "EUR": [
             {
-                "provider": "TapTapSend",
-                "url": "https://www.taptapsend.com/send-money-to/bangladesh",
-                "rate": 144.09,
-                "delivery": "Bank, Mobile Wallet"
-            },
-            {
                 "provider": "Wise",
                 "url": "https://wise.com/de/currency-converter/eur-to-bdt-rate",
                 "rate": 143.97,
@@ -132,6 +126,12 @@
                 "url": "https://www.instarem.com/en-us/currency-conversion/eur-to-bdt/",
                 "rate": 143.745,
                 "delivery": "Bank"
+            },
+            {
+                "provider": "TapTapSend",
+                "url": "https://www.taptapsend.com/send-money-to/bangladesh",
+                "rate": 143.65,
+                "delivery": "Bank, Mobile Wallet"
             },
             {
                 "provider": "SendWave",
