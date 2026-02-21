@@ -2,7 +2,7 @@
 
 **Compare live remittance rates to Bangladesh (BDT)** — Wise, Remitly, Western Union, SendWave, and 7+ providers in one place. See who gives the best rate for USD, GBP, EUR, CAD, AUD, and more. Auto-updated hourly. Open source, no sign-up, no ads.
 
-**Last updated:** `2026-02-21 22:01 UTC`
+**Last updated:** `2026-02-21 23:12 UTC`
 
 ## Why this exists
 
@@ -36,7 +36,6 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 5 | [SendWave](https://www.sendwave.com/en/currency-converter/gbp_gb-bdt_bd) | 163.875 | Bank, Mobile Wallet |
 | 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 163.000 | Bank, Mobile Wallet |
 | 7 | [NALA](https://www.nala.com/country/bangladesh) | 162.629 | Bank, Mobile Wallet |
-| 8 | [WorldRemit](https://www.worldremit.com/en-gb/bangladesh) | 158.879 | Bank, Mobile Wallet, Cash Pickup |
 
 ### EUR to BDT
 
@@ -133,7 +132,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-21T22:01:52.081878+00:00",
+  "updated_at": "2026-02-21T23:12:51.901764+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -151,4 +150,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-21 22:01 UTC*
+*Auto-generated on 2026-02-21 23:12 UTC*
