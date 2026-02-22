@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Western Union + 7 more and update it hourly.
 
-**Last updated:** `2026-02-22 12:19 UTC`
+**Last updated:** `2026-02-22 13:36 UTC`
 
 ## Why this exists
 
@@ -133,7 +133,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-22T12:19:46.583412+00:00",
+  "updated_at": "2026-02-22T13:36:10.763780+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -151,4 +151,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-22 12:19 UTC*
+*Auto-generated on 2026-02-22 13:36 UTC*
