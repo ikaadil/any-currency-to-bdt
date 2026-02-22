@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Western Union + 7 more and update it hourly.
 
-**Last updated:** `2026-02-22 16:14 UTC`
+**Last updated:** `2026-02-22 17:15 UTC`
 
 ## Why this exists
 
@@ -81,7 +81,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 |--:|----------|---------------:|----------|
 | **1** | [Western Union](https://www.westernunion.com/sg/en/currency-converter/sgd-to-bdt-rate.html) | **97.280** | Bank, Cash Pickup, Mobile Wallet |
 | 2 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 96.463 | Bank |
-| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | 96.310 | Bank |
+| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | 96.313 | Bank |
 
 ### AED to BDT
 
@@ -110,7 +110,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | # | Provider | 1 KWD = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Wise](https://wise.com/kw/currency-converter/kwd-to-bdt-rate) | **400.065** | Bank |
-| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/kwd-to-bdt/) | 397.611 | Bank |
+| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/kwd-to-bdt/) | 397.612 | Bank |
 
 ### QAR to BDT
 
@@ -133,7 +133,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-22T16:14:11.937407+00:00",
+  "updated_at": "2026-02-22T17:15:16.833819+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -151,4 +151,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-22 16:14 UTC*
+*Auto-generated on 2026-02-22 17:15 UTC*
