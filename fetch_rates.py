@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fetch BDT exchange rates from provider websites, save to rates.json, build README.md.
+"""Fetch BDT exchange rates and fees from provider websites, save to rates.json, build README.md.
 
 To add a new provider, subclass ``Provider`` and implement ``fetch_rate``:
 
@@ -13,7 +13,9 @@ To add a new provider, subclass ``Provider`` and implement ``fetch_rate``:
                 if r.status != 200:
                     return None
                 data = await r.json(content_type=None)
-                return data.get("rate")
+                rate = data.get("rate")
+                fee = data.get("fee")  # optional
+                return (rate, fee) if fee is not None else rate
 
 That's it — the provider auto-registers and the runner picks it up.
 """
@@ -68,6 +70,7 @@ class Rate:
     url: str
     rate: float
     delivery: str
+    fee: float | None = None
 
 
 # ── Browser pool (shared Chromium for all browser-based providers) ────────────
@@ -186,8 +189,8 @@ class Provider(ABC):
     @abstractmethod
     async def fetch_rate(
         self, session: aiohttp.ClientSession, src: str
-    ) -> float | None:
-        """Return the BDT exchange rate for *src* currency, or ``None``."""
+    ) -> float | tuple[float, float | None] | None:
+        """Return the BDT rate (or (rate, fee)) for *src* currency, or ``None``."""
 
     def get_url(self, src: str) -> str:
         """Return the user-facing URL for a given source currency."""
@@ -198,10 +201,17 @@ class Provider(ABC):
     ) -> Rate | None:
         """Fetch, wrap in a ``Rate``, and handle errors. Do not override."""
         try:
-            rate = await self.fetch_rate(session, src)
-            if rate is None:
+            result = await self.fetch_rate(session, src)
+            if result is None:
                 return None
-            return Rate(self.name, self.get_url(src), round(rate, 3), self.delivery)
+            if isinstance(result, (list, tuple)) and len(result) >= 2:
+                rate, fee = result[0], result[1]
+            else:
+                rate, fee = result, None
+            return Rate(
+                self.name, self.get_url(src), round(rate, 3), self.delivery,
+                fee=round(fee, 2) if fee is not None else None,
+            )
         except Exception as e:
             print(f"  [{self.name}] {src}: {e}")
             return None
@@ -391,7 +401,11 @@ class SendWave(Provider):
                 return None
             data = await r.json(content_type=None)
             rate = data.get("baseExchangeRate")
-            return float(rate) if rate else None
+            fee_str = data.get("baseFeeAmount")
+            if not rate:
+                return None
+            fee = float(fee_str) if fee_str is not None else None
+            return (float(rate), fee)
 
     def get_url(self, src):
         corridor = self._CORRIDORS.get(src)
@@ -425,9 +439,12 @@ class Paysend(Provider):
             html = await r.text()
             text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
             m = re.search(rf"1\.00\s+{src}\s*=\s*([\d.]+)\s*BDT", text)
-            if m:
-                return float(m.group(1))
-            return None
+            if not m:
+                return None
+            rate = float(m.group(1))
+            fee_m = re.search(r"Fee:\s*([\d.]+)\s*(?:USD|EUR|GBP|CAD|AUD)", text)
+            fee = float(fee_m.group(1)) if fee_m else None
+            return (rate, fee)
 
     def get_url(self, src):
         region = self._REGIONS.get(src, ("en-us", "the-united-states-of-america"))
@@ -626,12 +643,9 @@ def build_readme(raw: dict) -> str:
     rates_map: dict[str, list[dict]] = raw["rates"]
     lines: list[str] = []
 
-    lines.append("# Any Currency to BDT")
+    lines.append("# Best remittance rate to Bangladesh?")
     lines.append("")
-    lines.append("**Compare live remittance rates to Bangladesh (BDT)** — Wise, Remitly,"
-                  " Western Union, SendWave, and 7+ providers in one place. See who gives"
-                  " the best rate for USD, GBP, EUR, CAD, AUD, and more. Auto-updated"
-                  " hourly. Open source, no sign-up, no ads.")
+    lines.append("I compared Wise, Remitly, Western Union + 7 more and update it hourly.")
     lines.append("")
     lines.append(f"**Last updated:** `{updated}`")
     lines.append("")
@@ -655,14 +669,24 @@ def build_readme(raw: dict) -> str:
             lines.append("")
             continue
         best = rates[0]["rate"]
-        lines.append(f"| # | Provider | 1 {code} = BDT | Delivery |")
-        lines.append("|--:|----------|---------------:|----------|")
+        has_fee = any(r.get("fee") is not None for r in rates)
+        if has_fee:
+            lines.append(f"| # | Provider | 1 {code} = BDT | Fee | Delivery |")
+            lines.append("|--:|----------|---------------:|-----:|----------|")
+        else:
+            lines.append(f"| # | Provider | 1 {code} = BDT | Delivery |")
+            lines.append("|--:|----------|---------------:|----------|")
         for i, r in enumerate(rates, 1):
             is_best = r["rate"] == best
             rank = f"**{i}**" if is_best else str(i)
             rate_str = f"**{r['rate']:.3f}**" if is_best else f"{r['rate']:.3f}"
             provider_str = f"[{r['provider']}]({r['url']})"
-            lines.append(f"| {rank} | {provider_str} | {rate_str} | {r['delivery']} |")
+            if has_fee:
+                fee_val = r.get("fee")
+                fee_str = f"{fee_val:.2f} {code}" if fee_val is not None else "—"
+                lines.append(f"| {rank} | {provider_str} | {rate_str} | {fee_str} | {r['delivery']} |")
+            else:
+                lines.append(f"| {rank} | {provider_str} | {rate_str} | {r['delivery']} |")
         lines.append("")
 
     lines.append("## Data")
@@ -676,8 +700,8 @@ def build_readme(raw: dict) -> str:
     lines.append('  "target": "BDT",')
     lines.append('  "rates": {')
     lines.append('    "USD": [')
-    lines.append('      { "provider": "Wise", "rate": 122.200, ... },')
-    lines.append('      { "provider": "Remitly", "rate": 121.920, ... }')
+    lines.append('      { "provider": "Wise", "rate": 122.200, "fee": null, ... },')
+    lines.append('      { "provider": "SendWave", "rate": 121.569, "fee": 0.99, ... }')
     lines.append("    ],")
     lines.append("    ...")
     lines.append("  }")
@@ -688,7 +712,7 @@ def build_readme(raw: dict) -> str:
     lines.append("## Disclaimer")
     lines.append("")
     lines.append("This project is independent and not affiliated with any"
-                  " remittance provider. Rates are scraped from publicly"
+                  " remittance provider. Rates and fees are scraped from publicly"
                   " accessible pages and may not reflect actual transfer rates"
                   " or fees. Always confirm on the provider's website before"
                   " sending money.")

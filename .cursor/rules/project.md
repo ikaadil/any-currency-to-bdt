@@ -1,8 +1,8 @@
-# Any Currency to BDT — Project Rules
+# Best remittance rate to Bangladesh? — Project Rules
 
 ## Overview
 
-A single Python script (`fetch_rates.py`) that scrapes live BDT exchange rates directly from provider websites, saves raw data to `rates.json`, and generates `README.md`. GitHub Actions runs it daily.
+A single Python script (`fetch_rates.py`) that scrapes live BDT exchange rates and fees directly from provider websites, saves raw data to `rates.json`, and generates `README.md`. GitHub Actions runs it hourly.
 
 ## Tech Stack
 
@@ -10,7 +10,7 @@ A single Python script (`fetch_rates.py`) that scrapes live BDT exchange rates d
 - **aiohttp** — async HTTP client (fast, parallel requests)
 - **BeautifulSoup** — HTML parsing for providers without JSON endpoints
 - **certifi** — SSL certificates (needed by aiohttp on macOS)
-- **GitHub Actions** — daily cron at `00:00 UTC`
+- **GitHub Actions** — hourly cron
 
 ## Project Structure
 
@@ -20,7 +20,7 @@ any-currency-to-bdt/
 ├── rates.json                         # Auto-generated: raw rate data
 ├── README.md                          # Auto-generated: markdown tables
 ├── requirements.txt                   # aiohttp, beautifulsoup4, certifi
-├── .github/workflows/update-rates.yml # Daily cron
+├── .github/workflows/update-rates.yml # Hourly cron
 ├── .cursor/rules/project.md           # This file
 └── .gitignore
 ```
@@ -42,7 +42,7 @@ All scrapers inherit from `Provider(ABC)`. The base class handles:
 
 - **Auto-registration** via `__init_subclass__` — no manual list to maintain
 - **Error handling** — `scrape()` wraps `fetch_rate()` in try/except
-- **Rate construction** — builds `Rate(name, url, rate, delivery)` automatically
+- **Rate construction** — builds `Rate(name, url, rate, delivery, fee)` automatically; `fee` is optional
 - **Caching** — providers that batch-load rates store cache as instance state
 
 ### Adding a new provider
@@ -56,12 +56,14 @@ class MyProvider(Provider):
     delivery = "Bank"                        # delivery methods
 
     async def fetch_rate(self, session, src):
-        # Return a float (the BDT rate), or None if unavailable.
+        # Return a float (the BDT rate), (rate, fee), or None if unavailable.
         async with session.get(f"https://api.example.com/{src}", timeout=TIMEOUT) as r:
             if r.status != 200:
                 return None
             data = await r.json(content_type=None)
-            return data.get("rate")
+            rate = data.get("rate")
+            fee = data.get("fee")  # optional
+            return (rate, fee) if fee is not None else rate
 ```
 
 Optional overrides:
@@ -71,14 +73,14 @@ Optional overrides:
 ### Provider contract
 
 - `fetch_rate(session, src)` receives an `aiohttp.ClientSession` and source currency code (e.g. `"USD"`)
-- Return a `float` on success, `None` on failure (corridor not supported, API error, etc.)
+- Return a `float`, or `(rate, fee)` when fee is available, or `None` on failure (corridor not supported, API error, etc.)
 - Raise freely — the base class `scrape()` catches all exceptions
 - Use the module-level `TIMEOUT` constant for request timeouts
 - Use `TARGET` constant (`"BDT"`) instead of hardcoding the string
 
 ### One file
 
-Everything lives in `fetch_rates.py` (~300 lines). No multi-file module structure — not needed at this scale and keeps it dead simple to understand and maintain.
+Everything lives in `fetch_rates.py`. No multi-file module structure — not needed at this scale and keeps it dead simple to understand and maintain.
 
 ### Parallel fetching
 
@@ -123,16 +125,10 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - **Method**: WordPress REST API, returns conversion rates from source currency to all destinations; extract `BDT` from response
 - **Coverage**: All 12 currencies (mid-market rates)
 
-### Providers that cannot be scraped
-- **Western Union**: `prices/catalog` API requires bot-protection channel token
-- **Xoom**: API returns 403 from non-browser requests (fingerprinting)
-- **WorldRemit**: GraphQL API blocked by PerimeterX bot protection
-- **Ria**: No public Bangladesh rates endpoint; API requires authentication
-- **Paysend**: Rates loaded client-side; API rate-limited (429)
-- **nsave**: Fully JS-rendered calculator, no accessible API
-- **SendWave**: No public rate API
-- **MoneyGram**: Datadome CAPTCHA on all endpoints
-- **Elevate Pay**: Framer-based JS-rendered site, no accessible API
+### Providers and methods
+- **HTTP (API or HTML)**: Wise, Remitly, TapTapSend, NALA, Instarem, SendWave (API; returns fee), Paysend (HTML; fee from page)
+- **Playwright (browser)**: Western Union, WorldRemit, Xoom (JS-rendered; no public API)
+- **Not integrated** (blocked / no public endpoint): Ria, MoneyGram, nsave, Elevate Pay
 
 ## Coding Conventions
 
@@ -147,10 +143,11 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 
 ## GitHub Actions
 
-- Cron: `0 0 * * *` (midnight UTC daily)
+- Cron: `0 * * * *` (hourly)
 - Manual trigger: `workflow_dispatch`
-- Commits with: `:card_file_box: Update rates: YYYY-MM-DD`
+- Commits with: `:card_file_box: Update rates: YYYY-MM-DD HH UTC`
 - Commits both `rates.json` and `README.md` via `git add .`
+- Playwright Chromium cached; `install-deps` runs each time
 
 ## What NOT to Do
 
