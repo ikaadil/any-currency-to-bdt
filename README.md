@@ -1,8 +1,8 @@
 # Best remittance rate to Bangladesh?
 
-**Compare live remittance rates to Bangladesh (BDT)** — Wise, Remitly, Western Union, SendWave, and 7+ providers in one place. See who gives the best rate for USD, GBP, EUR, CAD, AUD, and more. Auto-updated hourly. Open source, no sign-up, no ads.
+I compared Wise, Remitly, Western Union + 7 more and update it hourly.
 
-**Last updated:** `2026-02-22 09:22 UTC`
+**Last updated:** `2026-02-22 09:53 UTC`
 
 ## Why this exists
 
@@ -23,6 +23,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 7 | [NALA](https://www.nala.com/country/bangladesh) | 121.156 | — | Bank, Mobile Wallet |
 | 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.000 | — | Bank, Mobile Wallet |
 | 9 | [WorldRemit](https://www.worldremit.com/en-us/bangladesh) | 120.751 | — | Bank, Mobile Wallet, Cash Pickup |
+| 10 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 119.404 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### GBP to BDT
 
@@ -48,7 +49,6 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 5 | [NALA](https://www.nala.com/country/bangladesh) | 142.697 | — | Bank, Mobile Wallet |
 | 6 | [Paysend](https://paysend.com/en-us/send-money/from-germany-to-bangladesh) | 142.586 | 1.50 EUR | Bank, Card |
 | 7 | [Western Union](https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html) | 140.984 | — | Bank, Cash Pickup, Mobile Wallet |
-| 8 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 140.915 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### CAD to BDT
 
@@ -133,7 +133,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-02-22T09:22:58.402912+00:00",
+  "updated_at": "2026-02-22T09:53:48.380642+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -151,4 +151,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-02-22 09:22 UTC*
+*Auto-generated on 2026-02-22 09:53 UTC*
