@@ -389,12 +389,15 @@ class Xe(Provider):
             # Xe format: "1.00 EUR = 144.26367589 BDT" or "1.00 EUR \= 144.26... BDT" (all pairs)
             # Allow optional backslash before = (HTML/encoding quirk)
             for pat in (
-                rf"1\.0+\s+{re.escape(src)}\s*\\?=\s*([\d.]+)\s*BDT",
-                rf"1\s+{re.escape(src)}\s*\\?=\s*([\d.]+)\s*BDT",
+                rf"1\.0+\s+{re.escape(src)}\s*\\?=\s*([\d.,]+)\s*BDT",
+                rf"1\s+{re.escape(src)}\s*\\?=\s*([\d.,]+)\s*BDT",
             ):
                 m = re.search(pat, text)
                 if m:
-                    rate = float(m.group(1))
+                    try:
+                        rate = float(m.group(1).replace(",", ""))
+                    except (ValueError, TypeError):
+                        continue
                     # Plausible BDT per 1 unit: JPY ~0.78, AED/SAR/QAR/MYR ~31-34, USD/GBP/EUR etc 80-165, KWD ~398
                     if src == "JPY":
                         if 0.1 < rate < 2:
@@ -429,13 +432,26 @@ class OrbitRemit(Provider):
                 return None
             html = await r.text()
             text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
-            # "1 AUD = 86.xx BDT" or similar
+            # Prefer "1 AUD = X BDT" if present
             m = re.search(rf"1\s+{src}\s*=\s*([\d,.]+)\s*BDT", text, re.I)
             if m:
                 rate = float(m.group(1).replace(",", ""))
                 if 50 < rate < 200 or (0.1 < rate < 2 and src == "NZD"):
                     return rate
+            # Page table has 5 AUD = 434.76 BDT (no 1 AUD row); derive rate = bdt/amount
+            for amount in (5, 10, 1):
+                m = re.search(rf"{amount}\s+{src}\s+([\d,.]+)\s*BDT", text, re.I)
+                if m:
+                    bdt = float(m.group(1).replace(",", ""))
+                    rate = bdt / amount
+                    if 80 < rate < 95 and src == "AUD":
+                        return rate
+                    if 50 < rate < 100 and src == "NZD":
+                        return rate
             matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
+            valid = [float(x) for x in matches if 80 < float(x) < 95]  # AUD→BDT ~86
+            if valid and src == "AUD":
+                return min(valid)
             valid = [float(x) for x in matches if 50 < float(x) < 200]
             return min(valid) if valid else None
 
@@ -655,6 +671,14 @@ class Xoom(Provider):
 _ria_fetch_lock: asyncio.Lock | None = None
 
 
+def _scrapling_body_html(page) -> str:
+    """Get HTML string from Scrapling response; page.body may be bytes or str."""
+    body = page.body
+    if isinstance(body, bytes):
+        return body.decode(getattr(page, "encoding", None) or "utf-8")
+    return body if isinstance(body, str) else ""
+
+
 def _scrapling_ria_fetch_sync(src: str) -> float | None:
     """Fetch Ria rate via Scrapling StealthyFetcher (blocking). Returns rate or None."""
     try:
@@ -667,22 +691,22 @@ def _scrapling_ria_fetch_sync(src: str) -> float | None:
         page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
     except Exception:
         return None
-    html = page.body.decode(getattr(page, "encoding", None) or "utf-8")
+    html = _scrapling_body_html(page)
     text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
     # Page shows "1.00000 = 121.95062" for the conversion result; prefer that over any "X BDT"
     m = re.search(r"1\.0+\s*=\s*([\d.]+)", text)
     if m:
         rate = float(m.group(1))
-        if 50 < rate < 200:
+        if 5 < rate < 1000 or (0.1 < rate < 2 and src == "JPY"):
             return rate
     # Fallback: first "= NNN.NN" that looks like a rate (conversion box)
     m = re.search(r"=\s*([\d]{2,4}\.\d{1,6})\s", text)
     if m:
         rate = float(m.group(1))
-        if 50 < rate < 200:
+        if 5 < rate < 1000 or (0.1 < rate < 2 and src == "JPY"):
             return rate
     matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
-    valid = [float(x) for x in matches if 50 < float(x) < 200]
+    valid = [float(x) for x in matches if 5 < float(x) < 1000 or (0.1 < float(x) < 2 and src == "JPY")]
     # Use min: page can show both the 1-unit rate (~122) and a higher amount; we want the conversion rate
     return min(valid) if valid else None
 
@@ -731,7 +755,7 @@ def _scrapling_moneygram_fetch_sync() -> float | None:
         page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
     except Exception:
         return None
-    html = page.body.decode(getattr(page, "encoding", None) or "utf-8")
+    html = _scrapling_body_html(page)
     # Try __NEXT_DATA__ JSON first
     nd_match = re.search(r'<script id="__NEXT_DATA__"[^>]*>([^<]+)</script>', html)
     if nd_match:
@@ -784,7 +808,7 @@ def _scrapling_nsave_fetch_sync() -> float | None:
         page = DynamicFetcher.fetch(url, headless=True, network_idle=True)
     except Exception:
         return None
-    html = page.body.decode(getattr(page, "encoding", None) or "utf-8")
+    html = _scrapling_body_html(page)
     text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
     # "1 USD = X BDT" or "X.XX BDT"
     m = re.search(r"1\s*USD\s*[=:]\s*([\d,.]+)\s*BDT", text, re.I)
