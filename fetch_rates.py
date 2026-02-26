@@ -676,21 +676,28 @@ def _scrapling_body_html(page) -> str:
     return body if isinstance(body, str) else ""
 
 
+def _valid_ria_rate(rate: float, src: str) -> bool:
+    """1 JPY ≈ 0.78 BDT; other currencies in 5–1000 range. Reject e.g. 78 for JPY (likely 100 JPY = 78 BDT)."""
+    if src == "JPY":
+        return 0.1 < rate < 2
+    return 5 < rate < 1000
+
+
 def _parse_ria_from_html(html: str, src: str) -> float | None:
     """Parse Ria rate from HTML text. Prefer '1.00000 = RATE' then min of valid BDT values."""
     text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
     m = re.search(r"1\.0+\s*=\s*([\d.]+)", text)
     if m:
         rate = float(m.group(1))
-        if 5 < rate < 1000 or (0.1 < rate < 2 and src == "JPY"):
+        if _valid_ria_rate(rate, src):
             return rate
     m = re.search(r"=\s*([\d]{2,4}\.\d{1,6})\s", text)
     if m:
         rate = float(m.group(1))
-        if 5 < rate < 1000 or (0.1 < rate < 2 and src == "JPY"):
+        if _valid_ria_rate(rate, src):
             return rate
     matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
-    valid = [float(x) for x in matches if 5 < float(x) < 1000 or (0.1 < float(x) < 2 and src == "JPY")]
+    valid = [float(x) for x in matches if _valid_ria_rate(float(x), src)]
     return min(valid) if valid else None
 
 
