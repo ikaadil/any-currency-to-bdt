@@ -150,7 +150,7 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - Manual trigger: `workflow_dispatch`
 - Commits with: `:card_file_box: Update rates: YYYY-MM-DD HH UTC`
 - Commits both `rates.json` and `README.md` via `git add .`
-- Playwright Chromium cached; `install-deps` runs each time; `scrapling install` runs to install Scrapling browsers (for Ria)
+- Playwright Chromium cached; `install-deps` runs each time. Scrapling (Ria, MoneyGram) uses the same Chromium via patchright; we do not run `scrapling install` in CI (Camoufox download from GitHub often times out)
 
 ## What NOT to Do
 
