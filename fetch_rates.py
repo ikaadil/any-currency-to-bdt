@@ -916,7 +916,7 @@ def build_readme(raw: dict) -> str:
     lines.append("Sending money to Bangladesh? Provider sites show one rate at a time."
                   " This repo **scrapes 14+ providers** (Wise, Remitly, Ria, Xe,"
                   " Western Union, WorldRemit, SendWave, Paysend, NALA, TapTapSend,"
-                  " Instarem, Xoom, OrbitRemit, MoneyGram) and **ranks them by rate**"
+                  " Instarem, Xoom, OrbitRemit, MoneyGram, nsave) and **ranks them by rate**"
                   " for each currency — so you can pick the best deal in seconds."
                   " Data is refreshed every hour via GitHub Actions. Use the tables"
                   " below or grab [`rates.json`](rates.json) for your own app.")

@@ -11,7 +11,7 @@ A single Python script (`fetch_rates.py`) that scrapes live BDT exchange rates a
 - **BeautifulSoup** — HTML parsing for providers without JSON endpoints
 - **certifi** — SSL certificates (needed by aiohttp on macOS)
 - **playwright** — headless Chromium for Western Union, WorldRemit, Xoom
-- **scrapling[fetchers]** — stealth browser (Scrapling) for Ria
+- **scrapling[fetchers]** — stealth browser for Ria, MoneyGram, nsave
 - **GitHub Actions** — hourly cron
 
 ## Project Structure
@@ -86,7 +86,7 @@ Everything lives in `fetch_rates.py`. No multi-file module structure — not nee
 
 ### Parallel fetching
 
-All requests (12 currencies × N providers) fire simultaneously via `asyncio.gather`. This brings runtime from ~26s (sequential httpx) down to ~1.5s.
+HTTP and browser tasks run in parallel via `asyncio.gather`; Scrapling (Ria, MoneyGram, nsave) runs in a single batch. Total runtime ~20–25s with Playwright + Scrapling.
 
 ### JSON as intermediate format
 
@@ -150,7 +150,7 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - Manual trigger: `workflow_dispatch`
 - Commits with: `:card_file_box: Update rates: YYYY-MM-DD HH UTC`
 - Commits both `rates.json` and `README.md` via `git add .`
-- Playwright Chromium cached; `install-deps` runs each time. Scrapling (Ria, MoneyGram) uses the same Chromium via patchright; we do not run `scrapling install` in CI (Camoufox download from GitHub often times out)
+- Playwright Chromium cached; `install-deps` runs each time. Scrapling (Ria, MoneyGram, nsave) uses the same Chromium; we do not run `scrapling install` in CI (Camoufox download from GitHub often times out)
 
 ## What NOT to Do
 
