@@ -10,6 +10,8 @@ A single Python script (`fetch_rates.py`) that scrapes live BDT exchange rates a
 - **aiohttp** — async HTTP client (fast, parallel requests)
 - **BeautifulSoup** — HTML parsing for providers without JSON endpoints
 - **certifi** — SSL certificates (needed by aiohttp on macOS)
+- **playwright** — headless Chromium for Western Union, WorldRemit, Xoom
+- **scrapling[fetchers]** — stealth browser (Scrapling) for Ria
 - **GitHub Actions** — hourly cron
 
 ## Project Structure
@@ -19,7 +21,7 @@ any-currency-to-bdt/
 ├── fetch_rates.py                     # Everything: scrapers, runner, README builder
 ├── rates.json                         # Auto-generated: raw rate data
 ├── README.md                          # Auto-generated: markdown tables
-├── requirements.txt                   # aiohttp, beautifulsoup4, certifi
+├── requirements.txt                   # aiohttp, beautifulsoup4, certifi, playwright, scrapling[fetchers]
 ├── .github/workflows/update-rates.yml # Hourly cron
 ├── .cursor/rules/project.md           # This file
 └── .gitignore
@@ -126,9 +128,10 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - **Coverage**: All 12 currencies (mid-market rates)
 
 ### Providers and methods
-- **HTTP (API or HTML)**: Wise, Remitly, TapTapSend, NALA, Instarem, SendWave (API; returns fee), Paysend (HTML; fee from page)
+- **HTTP (API or HTML)**: Wise, Remitly, TapTapSend, NALA, Instarem, SendWave (API; returns fee), Paysend (HTML; fee from page), **Xe** (currency converter; mid-market, all 12), **OrbitRemit** (AUD/NZD→BDT converter HTML)
 - **Playwright (browser)**: Western Union, WorldRemit, Xoom (JS-rendered; no public API)
-- **Not integrated** (blocked / no public endpoint): Ria, MoneyGram, nsave, Elevate Pay
+- **Scrapling (stealth browser)**: Ria (rates-conversion), **MoneyGram** (corridor page; best-effort __NEXT_DATA__), **nsave** (calculator; best-effort)
+- **Not integrated**: Elevate Pay (rate only in app)
 
 ## Coding Conventions
 
@@ -147,7 +150,7 @@ Rates come only from the actual provider websites (Wise, Remitly, etc.), never f
 - Manual trigger: `workflow_dispatch`
 - Commits with: `:card_file_box: Update rates: YYYY-MM-DD HH UTC`
 - Commits both `rates.json` and `README.md` via `git add .`
-- Playwright Chromium cached; `install-deps` runs each time
+- Playwright Chromium cached; `install-deps` runs each time; `scrapling install` runs to install Scrapling browsers (for Ria)
 
 ## What NOT to Do
 

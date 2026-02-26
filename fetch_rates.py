@@ -372,6 +372,78 @@ class Instarem(Provider):
         return f"https://www.instarem.com/en-us/currency-conversion/{src.lower()}-to-bdt/"
 
 
+class Xe(Provider):
+    """Scrapes Xe currency converter (mid-market rate; they also offer send-money to Bangladesh)."""
+
+    name = "Xe"
+    url = "https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT"
+    delivery = "Bank"
+
+    async def fetch_rate(self, session, src):
+        url = f"https://www.xe.com/currencyconverter/convert/?Amount=1&From={src}&To=BDT"
+        async with session.get(url, timeout=TIMEOUT) as r:
+            if r.status != 200:
+                return None
+            html = await r.text()
+            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+            # Xe format: "1.00 EUR = 144.26367589 BDT" or "1.00 EUR \= 144.26... BDT" (all pairs)
+            # Allow optional backslash before = (HTML/encoding quirk)
+            for pat in (
+                rf"1\.0+\s+{re.escape(src)}\s*\\?=\s*([\d.]+)\s*BDT",
+                rf"1\s+{re.escape(src)}\s*\\?=\s*([\d.]+)\s*BDT",
+            ):
+                m = re.search(pat, text)
+                if m:
+                    rate = float(m.group(1))
+                    # Plausible BDT per 1 unit: JPY ~0.78, AED/SAR/QAR/MYR ~31-34, USD/GBP/EUR etc 80-165, KWD ~398
+                    if src == "JPY":
+                        if 0.1 < rate < 2:
+                            return rate
+                    elif 5 < rate < 1000:
+                        return rate
+            return None
+
+    def get_url(self, src):
+        return f"https://www.xe.com/currencyconverter/convert/?Amount=1&From={src}&To=BDT"
+
+
+class OrbitRemit(Provider):
+    """Scrapes OrbitRemit currency converter (AUD/NZD to BDT)."""
+
+    name = "OrbitRemit"
+    url = "https://www.orbitremit.com/currency-converter/aud-to-bdt"
+    delivery = "Bank, Mobile Wallet"
+
+    _CURRENCIES: ClassVar[dict[str, str]] = {
+        "AUD": "aud-to-bdt",
+        "NZD": "nzd-to-bdt",
+    }
+
+    async def fetch_rate(self, session, src):
+        path = self._CURRENCIES.get(src)
+        if not path:
+            return None
+        url = f"https://www.orbitremit.com/currency-converter/{path}"
+        async with session.get(url, timeout=TIMEOUT) as r:
+            if r.status != 200:
+                return None
+            html = await r.text()
+            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+            # "1 AUD = 86.xx BDT" or similar
+            m = re.search(rf"1\s+{src}\s*=\s*([\d,.]+)\s*BDT", text, re.I)
+            if m:
+                rate = float(m.group(1).replace(",", ""))
+                if 50 < rate < 200 or (0.1 < rate < 2 and src == "NZD"):
+                    return rate
+            matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
+            valid = [float(x) for x in matches if 50 < float(x) < 200]
+            return min(valid) if valid else None
+
+    def get_url(self, src):
+        path = self._CURRENCIES.get(src, "aud-to-bdt")
+        return f"https://www.orbitremit.com/currency-converter/{path}"
+
+
 class SendWave(Provider):
     name = "SendWave"
     url = "https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd"
@@ -580,6 +652,186 @@ class Xoom(Provider):
         return self._cache.get(src)
 
 
+_ria_fetch_lock: asyncio.Lock | None = None
+
+
+def _scrapling_ria_fetch_sync(src: str) -> float | None:
+    """Fetch Ria rate via Scrapling StealthyFetcher (blocking). Returns rate or None."""
+    try:
+        from scrapling.fetchers import StealthyFetcher
+    except ImportError:
+        return None
+    StealthyFetcher.adaptive = True
+    url = f"https://www.riamoneytransfer.com/en-us/rates-conversion/?From={src}&To=BDT&Amount=1"
+    try:
+        page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
+    except Exception:
+        return None
+    html = page.body.decode(getattr(page, "encoding", None) or "utf-8")
+    text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+    # Page shows "1.00000 = 121.95062" for the conversion result; prefer that over any "X BDT"
+    m = re.search(r"1\.0+\s*=\s*([\d.]+)", text)
+    if m:
+        rate = float(m.group(1))
+        if 50 < rate < 200:
+            return rate
+    # Fallback: first "= NNN.NN" that looks like a rate (conversion box)
+    m = re.search(r"=\s*([\d]{2,4}\.\d{1,6})\s", text)
+    if m:
+        rate = float(m.group(1))
+        if 50 < rate < 200:
+            return rate
+    matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
+    valid = [float(x) for x in matches if 50 < float(x) < 200]
+    # Use min: page can show both the 1-unit rate (~122) and a higher amount; we want the conversion rate
+    return min(valid) if valid else None
+
+
+async def _scrapling_ria_fetch(src: str) -> float | None:
+    """Run Ria fetch in a thread; one at a time to avoid spawning many browsers."""
+    global _ria_fetch_lock
+    if _ria_fetch_lock is None:
+        _ria_fetch_lock = asyncio.Lock()  # noqa: PLW0603
+    async with _ria_fetch_lock:
+        return await asyncio.to_thread(_scrapling_ria_fetch_sync, src)
+
+
+class Ria(Provider):
+    """Scrapes Ria Money Transfer rates-conversion page via Scrapling (stealth browser)."""
+
+    name = "Ria"
+    url = "https://www.riamoneytransfer.com/en-us/rates-conversion/?From=USD&To=BDT&Amount=1"
+    delivery = "Bank, Cash Pickup, Mobile Wallet"
+
+    _CURRENCIES: ClassVar[set[str]] = {
+        "USD", "GBP", "EUR", "CAD", "AUD", "SGD", "AED", "SAR", "JPY",
+    }
+
+    async def fetch_rate(self, session, src):
+        if src not in self._CURRENCIES:
+            return None
+        return await _scrapling_ria_fetch(src)
+
+    def get_url(self, src):
+        return (
+            f"https://www.riamoneytransfer.com/en-us/rates-conversion/"
+            f"?From={src}&To=BDT&Amount=1"
+        )
+
+
+def _scrapling_moneygram_fetch_sync() -> float | None:
+    """Fetch MoneyGram USD->BDT rate via Scrapling (blocking). Returns rate or None."""
+    try:
+        from scrapling.fetchers import StealthyFetcher
+    except ImportError:
+        return None
+    StealthyFetcher.adaptive = True
+    url = "https://www.moneygram.com/us/en/corridor/bangladesh"
+    try:
+        page = StealthyFetcher.fetch(url, headless=True, network_idle=True)
+    except Exception:
+        return None
+    html = page.body.decode(getattr(page, "encoding", None) or "utf-8")
+    # Try __NEXT_DATA__ JSON first
+    nd_match = re.search(r'<script id="__NEXT_DATA__"[^>]*>([^<]+)</script>', html)
+    if nd_match:
+        try:
+            import json
+            data = json.loads(nd_match.group(1))
+            def find_rate(obj, seen=None):
+                seen = seen or set()
+                if id(obj) in seen:
+                    return None
+                if isinstance(obj, (int, float)) and 50 < obj < 200:
+                    return float(obj)
+                if isinstance(obj, str) and re.match(r"^\d+\.?\d*$", obj):
+                    v = float(obj)
+                    if 50 < v < 200:
+                        return v
+                if isinstance(obj, dict):
+                    seen.add(id(obj))
+                    for k, v in obj.items():
+                        if "rate" in k.lower() and isinstance(v, (int, float)) and 50 < v < 200:
+                            return float(v)
+                        r = find_rate(v, seen)
+                        if r is not None:
+                            return r
+                if isinstance(obj, list):
+                    for item in obj:
+                        r = find_rate(item, seen)
+                        if r is not None:
+                            return r
+                return None
+            rate = find_rate(data)
+            if rate is not None:
+                return rate
+        except Exception:
+            pass
+    text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+    matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
+    valid = [float(x) for x in matches if 50 < float(x) < 200]
+    return min(valid) if valid else None
+
+
+def _scrapling_nsave_fetch_sync() -> float | None:
+    """Fetch nsave USD->BDT rate via Scrapling DynamicFetcher (blocking). Returns rate or None."""
+    try:
+        from scrapling.fetchers import DynamicFetcher
+    except ImportError:
+        return None
+    url = "https://www.nsave.com/calculator/usd-bdt"
+    try:
+        page = DynamicFetcher.fetch(url, headless=True, network_idle=True)
+    except Exception:
+        return None
+    html = page.body.decode(getattr(page, "encoding", None) or "utf-8")
+    text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+    # "1 USD = X BDT" or "X.XX BDT"
+    m = re.search(r"1\s*USD\s*[=:]\s*([\d,.]+)\s*BDT", text, re.I)
+    if m:
+        rate = float(m.group(1).replace(",", ""))
+        if 50 < rate < 200:
+            return rate
+    matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
+    valid = [float(x) for x in matches if 50 < float(x) < 200]
+    return min(valid) if valid else None
+
+
+async def _scrapling_extra_fetch(sync_fn, *args):
+    """Run a Scrapling fetch in a thread; reuse Ria lock so one browser at a time."""
+    global _ria_fetch_lock
+    if _ria_fetch_lock is None:
+        _ria_fetch_lock = asyncio.Lock()  # noqa: PLW0603
+    async with _ria_fetch_lock:
+        return await asyncio.to_thread(sync_fn, *args)
+
+
+class MoneyGram(Provider):
+    """Scrapes MoneyGram corridor page via Scrapling (stealth browser). Best-effort."""
+
+    name = "MoneyGram"
+    url = "https://www.moneygram.com/us/en/corridor/bangladesh"
+    delivery = "Bank, Cash Pickup, Mobile Wallet"
+
+    async def fetch_rate(self, session, src):
+        if src != "USD":
+            return None
+        return await _scrapling_extra_fetch(_scrapling_moneygram_fetch_sync)
+
+
+class Nsave(Provider):
+    """Scrapes nsave calculator via Scrapling DynamicFetcher. Best-effort."""
+
+    name = "nsave"
+    url = "https://www.nsave.com/calculator/usd-bdt"
+    delivery = "Bank, Mobile Wallet"
+
+    async def fetch_rate(self, session, src):
+        if src != "USD":
+            return None
+        return await _scrapling_extra_fetch(_scrapling_nsave_fetch_sync)
+
+
 # ── Runner ───────────────────────────────────────────────────────────────────
 
 
@@ -645,18 +897,19 @@ def build_readme(raw: dict) -> str:
 
     lines.append("# Best remittance rate to Bangladesh?")
     lines.append("")
-    lines.append("I compared Wise, Remitly, Western Union + 7 more and update it hourly.")
+    lines.append("I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.")
     lines.append("")
     lines.append(f"**Last updated:** `{updated}`")
     lines.append("")
     lines.append("## Why this exists")
     lines.append("")
     lines.append("Sending money to Bangladesh? Provider sites show one rate at a time."
-                  " This repo **scrapes 10+ providers** (Wise, Remitly, Western Union,"
-                  " WorldRemit, SendWave, Paysend, NALA, TapTapSend, Instarem, Xoom) and"
-                  " **ranks them by rate** for each currency — so you can pick the best"
-                  " deal in seconds. Data is refreshed every hour via GitHub Actions."
-                  " Use the tables below or grab [`rates.json`](rates.json) for your own app.")
+                  " This repo **scrapes 14+ providers** (Wise, Remitly, Ria, Xe,"
+                  " Western Union, WorldRemit, SendWave, Paysend, NALA, TapTapSend,"
+                  " Instarem, Xoom, OrbitRemit, MoneyGram) and **ranks them by rate**"
+                  " for each currency — so you can pick the best deal in seconds."
+                  " Data is refreshed every hour via GitHub Actions. Use the tables"
+                  " below or grab [`rates.json`](rates.json) for your own app.")
     lines.append("")
     lines.append("## Rates")
     lines.append("")

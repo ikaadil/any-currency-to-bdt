@@ -38,6 +38,9 @@ jobs:
       - name: Install Playwright system deps
         run: python -m playwright install-deps chromium
 
+      - name: Install Scrapling browsers
+        run: scrapling install
+
       - name: Run fetcher script
         run: python fetch_rates.py
 
