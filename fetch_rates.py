@@ -73,21 +73,17 @@ class Rate:
     fee: float | None = None
 
 
-# ── Browser pool (shared Chromium for all browser-based providers) ────────────
+# ── Browser pool (Playwright: WU, WorldRemit, Xoom) ───────────────────────────
 
 
 class BrowserPool:
-    """Single Chromium instance with a semaphore-controlled page pool.
-
-    Avoids launching multiple browsers and serialises page usage to *max_pages*
-    concurrent tabs.  Lazy-starts on first ``page()`` call.
-    """
+    """Single Chromium instance; serialised page usage for WU, WorldRemit, Xoom."""
 
     def __init__(self, max_pages: int = 12):
         self._sem = asyncio.Semaphore(max_pages)
-        self._pw: object | None = None
-        self._browser: object | None = None
-        self._context: object | None = None
+        self._pw = None
+        self._browser = None
+        self._context = None
         self._started = False
         self._init_lock = asyncio.Lock()
 
@@ -98,7 +94,6 @@ class BrowserPool:
             if self._started:
                 return
             from playwright.async_api import async_playwright
-
             self._pw = await async_playwright().start()
             self._browser = await self._pw.chromium.launch(
                 headless=True,
@@ -110,8 +105,7 @@ class BrowserPool:
                 locale="en-US",
             )
             await self._context.add_init_script(
-                "Object.defineProperty(navigator, 'webdriver', "
-                "{ get: () => undefined });"
+                "Object.defineProperty(navigator, 'webdriver', { get: () => undefined });"
             )
             self._started = True
 
@@ -126,24 +120,15 @@ class BrowserPool:
 
     @asynccontextmanager
     async def page(self):
-        """Yield a fresh browser page, then close it."""
         await self._start()
         async with self._sem:
             p = await self._context.new_page()
-
-            def _should_block(route):
+            def _block(route):
                 req = route.request
                 if req.resource_type in self._BLOCKED:
                     return True
-                url = req.url
-                return any(d in url for d in self._BLOCKED_DOMAINS)
-
-            await p.route(
-                "**/*",
-                lambda route: (
-                    route.abort() if _should_block(route) else route.continue_()
-                ),
-            )
+                return any(d in req.url for d in self._BLOCKED_DOMAINS)
+            await p.route("**/*", lambda route: route.abort() if _block(route) else route.continue_())
             try:
                 yield p
             finally:
@@ -541,7 +526,7 @@ class Paysend(Provider):
 
 
 class WesternUnion(Provider):
-    """Scrapes WU's currency converter pages via the shared browser pool."""
+    """Scrapes WU currency converter via Playwright (JS-rendered)."""
 
     name = "Western Union"
     url = "https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html"
@@ -560,19 +545,12 @@ class WesternUnion(Provider):
             f"https://www.westernunion.com/{region}/en/"
             f"currency-converter/{src.lower()}-to-bdt-rate.html"
         )
-        js = """
-            () => {
-                const m = document.body.innerText.match(
-                    /FX:\\s*1\\.00\\s*%s\\s*[–\\-]\\s*([\\d,]+\\.\\d+)\\s*BDT/
-                );
-                return m ? parseFloat(m[1].replace(/,/g, '')) : null;
-            }
-        """ % src
+        js = "() => { const m = document.body.innerText.match(/FX:\\s*1\\.00\\s*%s\\s*[–\\-]\\s*([\\d,]+\\.\\d+)\\s*BDT/); return m ? parseFloat(m[1].replace(/,/g,'')) : null; }" % src
         async with _pool.page() as page:
             await page.goto(url, wait_until="domcontentloaded", timeout=8000)
             try:
-                handle = await page.wait_for_function(js, timeout=4000)
-                return await handle.json_value()
+                h = await page.wait_for_function(js, timeout=4000)
+                return await h.json_value()
             except Exception:
                 return None
 
@@ -585,7 +563,7 @@ class WesternUnion(Provider):
 
 
 class WorldRemit(Provider):
-    """Scrapes WorldRemit's send-money pages via the shared browser pool."""
+    """Scrapes WorldRemit send-money pages via Playwright (JS-rendered)."""
 
     name = "WorldRemit"
     url = "https://www.worldremit.com/en-us/bangladesh"
@@ -600,19 +578,12 @@ class WorldRemit(Provider):
         if not region:
             return None
         url = f"https://www.worldremit.com/{region}/bangladesh"
-        js = """
-            () => {
-                const m = document.body.innerText.match(
-                    /1\\s*%s\\s*=\\s*([\\d,]+\\.\\d+)\\s*BDT/
-                );
-                return m ? parseFloat(m[1].replace(/,/g, '')) : null;
-            }
-        """ % src
+        js = "() => { const m = document.body.innerText.match(/1\\s*%s\\s*=\\s*([\\d,]+\\.\\d+)\\s*BDT/); return m ? parseFloat(m[1].replace(/,/g,'')) : null; }" % src
         async with _pool.page() as page:
             await page.goto(url, wait_until="domcontentloaded", timeout=8000)
             try:
-                handle = await page.wait_for_function(js, timeout=4000)
-                return await handle.json_value()
+                h = await page.wait_for_function(js, timeout=4000)
+                return await h.json_value()
             except Exception:
                 return None
 
@@ -622,24 +593,13 @@ class WorldRemit(Provider):
 
 
 class Xoom(Provider):
-    """Scrapes Xoom (PayPal) send-money pages via the shared browser pool.
-
-    Xoom auto-detects the sending currency from IP geolocation. We load the
-    page once, detect which currency is displayed, and cache that single rate.
-    """
+    """Scrapes Xoom (PayPal) via Playwright; one page load, detect currency and rate."""
 
     name = "Xoom"
     url = "https://www.xoom.com/bangladesh/send-money"
     delivery = "Bank, Cash Pickup, Mobile Wallet"
 
-    _JS = """
-        () => {
-            const m = document.body.innerText.match(
-                /1\\s+([A-Z]{3})\\s*=\\s*([\\d,]+\\.\\d+)\\s*BDT/
-            );
-            return m ? [m[1], parseFloat(m[2].replace(/,/g, ''))] : null;
-        }
-    """
+    _JS = "() => { const m = document.body.innerText.match(/1\\s+([A-Z]{3})\\s*=\\s*([\\d,]+\\.\\d+)\\s*BDT/); return m ? [m[1], parseFloat(m[2].replace(/,/g,''))] : null; }"
 
     def __init__(self):
         self._cache: dict[str, float] = {}
@@ -655,8 +615,8 @@ class Xoom(Provider):
             async with _pool.page() as page:
                 await page.goto(self.url, wait_until="domcontentloaded", timeout=8000)
                 try:
-                    handle = await page.wait_for_function(self._JS, timeout=4000)
-                    pair = await handle.json_value()
+                    h = await page.wait_for_function(self._JS, timeout=4000)
+                    pair = await h.json_value()
                     if pair:
                         self._cache[pair[0]] = pair[1]
                 except Exception:
@@ -666,14 +626,6 @@ class Xoom(Provider):
     async def fetch_rate(self, session, src):
         await self._load()
         return self._cache.get(src)
-
-
-def _scrapling_body_html(page) -> str:
-    """Get HTML string from Scrapling response; page.body may be bytes or str."""
-    body = page.body
-    if isinstance(body, bytes):
-        return body.decode(getattr(page, "encoding", None) or "utf-8")
-    return body if isinstance(body, str) else ""
 
 
 def _valid_ria_rate(rate: float, src: str) -> bool:
@@ -699,6 +651,14 @@ def _parse_ria_from_html(html: str, src: str) -> float | None:
     matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
     valid = [float(x) for x in matches if _valid_ria_rate(float(x), src)]
     return min(valid) if valid else None
+
+
+def _scrapling_body(page) -> str:
+    """Get HTML from Scrapling page (body may be bytes or str)."""
+    body = page.body
+    if isinstance(body, bytes):
+        return body.decode(getattr(page, "encoding", None) or "utf-8")
+    return body if isinstance(body, str) else ""
 
 
 def _parse_moneygram_from_html(html: str) -> float | None:
@@ -744,47 +704,63 @@ def _parse_moneygram_from_html(html: str) -> float | None:
     return min(valid) if valid else None
 
 
-_scrapling_cache: dict = {}  # {"Ria": {src: rate}, "MoneyGram": rate or None}
+_scrapling_cache: dict = {}  # {"Ria": {src: rate}, "MoneyGram": rate, "Nsave": rate}
 
 
 def _scrapling_stealthy_batch_sync() -> None:
-    """One StealthySession: fetch all Ria currencies + MoneyGram; fill _scrapling_cache. Fast path."""
+    """One StealthySession: fetch all Ria + MoneyGram; fill _scrapling_cache. Uses Playwright Chromium."""
     global _scrapling_cache
-    _scrapling_cache = {"Ria": {}, "MoneyGram": None}
+    _scrapling_cache = {"Ria": {}, "MoneyGram": None, "Nsave": None}
     try:
         from scrapling.fetchers import StealthySession
     except ImportError:
         return
-    RIA_CURRENCIES = {"USD", "GBP", "EUR", "CAD", "AUD", "SGD", "AED", "SAR", "JPY"}
+    ria_currencies = {"USD", "GBP", "EUR", "CAD", "AUD", "SGD", "AED", "SAR", "JPY"}
     try:
         with StealthySession(headless=True, network_idle=False) as session:
-            for src in RIA_CURRENCIES:
+            for src in ria_currencies:
                 url = f"https://www.riamoneytransfer.com/en-us/rates-conversion/?From={src}&To=BDT&Amount=1"
                 try:
                     page = session.fetch(url)
-                    html = _scrapling_body_html(page)
-                    rate = _parse_ria_from_html(html, src)
+                    rate = _parse_ria_from_html(_scrapling_body(page), src)
                     if rate is not None:
                         _scrapling_cache["Ria"][src] = rate
                 except Exception:
                     pass
             try:
                 page = session.fetch("https://www.moneygram.com/us/en/corridor/bangladesh")
-                html = _scrapling_body_html(page)
-                _scrapling_cache["MoneyGram"] = _parse_moneygram_from_html(html)
+                _scrapling_cache["MoneyGram"] = _parse_moneygram_from_html(_scrapling_body(page))
             except Exception:
                 pass
     except Exception:
         pass
 
 
-async def _scrapling_ria_fetch(src: str) -> float | None:
-    """Ria rates come from batch; single-fetch path only if batch not run (e.g. tests)."""
-    return _scrapling_cache.get("Ria", {}).get(src)
+def _scrapling_nsave_sync() -> float | None:
+    """Fetch nsave USD->BDT via Scrapling DynamicFetcher (best-effort)."""
+    try:
+        from scrapling.fetchers import DynamicFetcher
+    except ImportError:
+        return None
+    try:
+        page = DynamicFetcher.fetch("https://www.nsave.com/calculator/usd-bdt", headless=True, network_idle=False)
+    except Exception:
+        return None
+    text = BeautifulSoup(_scrapling_body(page), "html.parser").get_text(" ", strip=True)
+    m = re.search(r"1\s*USD\s*[=:]\s*([\d,.]+)\s*BDT", text, re.I)
+    if m:
+        rate = float(m.group(1).replace(",", ""))
+        if 50 < rate < 200:
+            return rate
+    for x in re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text):
+        v = float(x)
+        if 50 < v < 200:
+            return v
+    return None
 
 
 class Ria(Provider):
-    """Scrapes Ria Money Transfer rates-conversion page via Scrapling (stealth browser)."""
+    """Scrapes Ria via Scrapling StealthyFetcher (batch)."""
 
     name = "Ria"
     url = "https://www.riamoneytransfer.com/en-us/rates-conversion/?From=USD&To=BDT&Amount=1"
@@ -797,7 +773,7 @@ class Ria(Provider):
     async def fetch_rate(self, session, src):
         if src not in self._CURRENCIES:
             return None
-        return await _scrapling_ria_fetch(src)
+        return _scrapling_cache.get("Ria", {}).get(src)
 
     def get_url(self, src):
         return (
@@ -806,43 +782,8 @@ class Ria(Provider):
         )
 
 
-def _scrapling_nsave_fetch_sync() -> float | None:
-    """Fetch nsave USD->BDT rate via Scrapling DynamicFetcher (blocking). Best-effort, quick timeout."""
-    try:
-        from scrapling.fetchers import DynamicFetcher
-    except ImportError:
-        return None
-    url = "https://www.nsave.com/calculator/usd-bdt"
-    try:
-        page = DynamicFetcher.fetch(url, headless=True, network_idle=False)
-    except Exception:
-        return None
-    html = _scrapling_body_html(page)
-    text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
-    # "1 USD = X BDT" or "X.XX BDT"
-    m = re.search(r"1\s*USD\s*[=:]\s*([\d,.]+)\s*BDT", text, re.I)
-    if m:
-        rate = float(m.group(1).replace(",", ""))
-        if 50 < rate < 200:
-            return rate
-    matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
-    valid = [float(x) for x in matches if 50 < float(x) < 200]
-    return min(valid) if valid else None
-
-
-async def _scrapling_nsave_fetch() -> float | None:
-    """Run nsave fetch in thread with short timeout so it doesn't block the run."""
-    try:
-        return await asyncio.wait_for(
-            asyncio.to_thread(_scrapling_nsave_fetch_sync),
-            timeout=12.0,
-        )
-    except (asyncio.TimeoutError, asyncio.CancelledError):
-        return None
-
-
 class MoneyGram(Provider):
-    """Scrapes MoneyGram corridor page via Scrapling (stealth browser). Filled from batch."""
+    """Scrapes MoneyGram via Scrapling StealthyFetcher (batch)."""
 
     name = "MoneyGram"
     url = "https://www.moneygram.com/us/en/corridor/bangladesh"
@@ -855,7 +796,7 @@ class MoneyGram(Provider):
 
 
 class Nsave(Provider):
-    """Scrapes nsave calculator via Scrapling DynamicFetcher. Best-effort; rate from batch/run."""
+    """Scrapes nsave via Scrapling DynamicFetcher (best-effort)."""
 
     name = "nsave"
     url = "https://www.nsave.com/calculator/usd-bdt"
@@ -884,7 +825,6 @@ def _needs_browser(provider: Provider) -> bool:
 
 
 def _is_scrapling_provider(provider: Provider) -> bool:
-    """Ria, MoneyGram, Nsave are run via batch / single nsave task, not per-currency."""
     return isinstance(provider, (Ria, MoneyGram, Nsave))
 
 
@@ -908,7 +848,9 @@ async def fetch_all() -> dict:
             if _needs_browser(provider)
         ]
         batch_task = asyncio.create_task(asyncio.to_thread(_scrapling_stealthy_batch_sync))
-        nsave_task = asyncio.create_task(_scrapling_nsave_fetch())
+        nsave_task = asyncio.create_task(
+            asyncio.wait_for(asyncio.to_thread(_scrapling_nsave_sync), timeout=14.0)
+        )
 
         results = await asyncio.gather(
             _pool._start(),
@@ -926,29 +868,28 @@ async def fetch_all() -> dict:
 
     for i, r in enumerate(main_results):
         if i == 0:
-            continue  # _pool._start()
+            continue
         if isinstance(r, BaseException):
             continue
         code, rate = r
         if rate:
             data[code].append(asdict(rate))
 
-    # Merge Ria + MoneyGram from single browser batch
-    ria_provider = next((p for p in _providers if p.name == "Ria"), None)
-    if ria_provider:
-        for src, rate in _scrapling_cache.get("Ria", {}).items():
-            data[src].append(asdict(Rate(ria_provider.name, ria_provider.get_url(src), round(rate, 3), ria_provider.delivery, fee=None)))
-            print(f"  {src}: ✅ Ria: {rate:.3f}")
-    mg_provider = next((p for p in _providers if p.name == "MoneyGram"), None)
-    if mg_provider and _scrapling_cache.get("MoneyGram") is not None:
-        r = _scrapling_cache["MoneyGram"]
-        data["USD"].append(asdict(Rate(mg_provider.name, mg_provider.get_url("USD"), round(r, 3), mg_provider.delivery, fee=None)))
-        print(f"  USD: ✅ MoneyGram: {r:.3f}")
     if nsave_result is not None:
-        nsave_provider = next((p for p in _providers if p.name == "nsave"), None)
-        if nsave_provider:
-            data["USD"].append(asdict(Rate(nsave_provider.name, nsave_provider.get_url("USD"), round(nsave_result, 3), nsave_provider.delivery, fee=None)))
-            print(f"  USD: ✅ nsave: {nsave_result:.3f}")
+        _scrapling_cache["Nsave"] = nsave_result
+
+    ria_p = next((p for p in _providers if p.name == "Ria"), None)
+    if ria_p:
+        for src, rate in _scrapling_cache.get("Ria", {}).items():
+            data[src].append(asdict(Rate(ria_p.name, ria_p.get_url(src), round(rate, 3), ria_p.delivery, fee=None)))
+    mg_p = next((p for p in _providers if p.name == "MoneyGram"), None)
+    if mg_p and _scrapling_cache.get("MoneyGram") is not None:
+        r = _scrapling_cache["MoneyGram"]
+        data["USD"].append(asdict(Rate(mg_p.name, mg_p.get_url("USD"), round(r, 3), mg_p.delivery, fee=None)))
+    nsave_p = next((p for p in _providers if p.name == "nsave"), None)
+    if nsave_p and _scrapling_cache.get("Nsave") is not None:
+        r = _scrapling_cache["Nsave"]
+        data["USD"].append(asdict(Rate(nsave_p.name, nsave_p.get_url("USD"), round(r, 3), nsave_p.delivery, fee=None)))
 
     for code in data:
         data[code].sort(key=lambda r: r["rate"], reverse=True)

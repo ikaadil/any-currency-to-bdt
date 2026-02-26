@@ -35,16 +35,15 @@ jobs:
         if: steps.pw-cache.outputs.cache-hit != 'true'
         run: python -m playwright install chromium
 
-      - name: Install Playwright system deps
+      - name: Install Playwright system dependencies
         run: python -m playwright install-deps chromium
 
-      # Scrapling StealthyFetcher (Ria, MoneyGram) uses Playwright/patchright with Chromium
-      # (see https://github.com/D4Vinci/Scrapling). We do not run `scrapling install` here
-      # because it downloads Camoufox from api.github.com, which often times out in CI.
-      # The Chromium installed above is sufficient for Scrapling's fetchers.
-
+      # Scrapling StealthyFetcher uses Playwright Chromium (no scrapling install needed)
       - name: Run fetcher script
         run: python fetch_rates.py
+
+      - name: Test rates output
+        run: python -m pytest tests/test_fetch_rates.py -v
 
       - name: Commit and push changes
         run: |
