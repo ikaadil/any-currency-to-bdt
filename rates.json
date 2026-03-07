@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-03-07T10:11:30.655193+00:00",
+    "updated_at": "2026-03-07T11:09:43.056438+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
@@ -14,13 +14,6 @@
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT",
                 "rate": 122.451,
-                "delivery": "Bank",
-                "fee": null
-            },
-            {
-                "provider": "Instarem",
-                "url": "https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/",
-                "rate": 122.319,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -44,6 +37,13 @@
                 "rate": 121.718,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": 0.99
+            },
+            {
+                "provider": "Instarem",
+                "url": "https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/",
+                "rate": 121.648,
+                "delivery": "Bank",
+                "fee": null
             },
             {
                 "provider": "Paysend",
@@ -185,8 +185,15 @@
             {
                 "provider": "NALA",
                 "url": "https://www.nala.com/country/bangladesh",
-                "rate": 140.675,
+                "rate": 140.657,
                 "delivery": "Bank, Mobile Wallet",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html",
+                "rate": 138.838,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             }
         ],
@@ -222,8 +229,15 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/cad-to-bdt/",
-                "rate": 89.628,
+                "rate": 89.635,
                 "delivery": "Bank",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/ca/en/currency-converter/cad-to-bdt-rate.html",
+                "rate": 89.57,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
             {
@@ -249,6 +263,13 @@
             }
         ],
         "AUD": [
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/au/en/currency-converter/aud-to-bdt-rate.html",
+                "rate": 88.859,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
+            },
             {
                 "provider": "Remitly",
                 "url": "https://www.remitly.com/au/en/bangladesh",
@@ -310,7 +331,7 @@
             {
                 "provider": "Western Union",
                 "url": "https://www.westernunion.com/sg/en/currency-converter/sgd-to-bdt-rate.html",
-                "rate": 96.361,
+                "rate": 96.363,
                 "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
@@ -407,7 +428,7 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/sar-to-bdt/",
-                "rate": 32.403,
+                "rate": 32.358,
                 "delivery": "Bank",
                 "fee": null
             }
