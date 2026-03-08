@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-03-08 13:32 UTC`
+**Last updated:** `2026-03-08 14:13 UTC`
 
 ## Why this exists
 
@@ -37,6 +37,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 163.094 | — | Bank |
 | 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 162.500 | — | Bank, Mobile Wallet |
 | 7 | [NALA](https://www.nala.com/country/bangladesh) | 161.585 | — | Bank, Mobile Wallet |
+| 8 | [WorldRemit](https://www.worldremit.com/en-gb/bangladesh) | 157.553 | — | Bank, Mobile Wallet, Cash Pickup |
 
 ### EUR to BDT
 
@@ -60,21 +61,24 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 3 | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | 90.155 | — | Bank |
 | 4 | [SendWave](https://www.sendwave.com/en/currency-converter/cad_ca-bdt_bd) | 89.719 | 1.99 CAD | Bank, Mobile Wallet |
 | 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/cad-to-bdt/) | 89.635 | — | Bank |
-| 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 89.000 | — | Bank, Mobile Wallet |
-| 7 | [Paysend](https://paysend.com/en-ca/send-money/from-canada-to-bangladesh) | 88.848 | 0.00 CAD | Bank, Card |
-| 8 | [WorldRemit](https://www.worldremit.com/en-ca/bangladesh) | 87.194 | — | Bank, Mobile Wallet, Cash Pickup |
+| 6 | [Western Union](https://www.westernunion.com/ca/en/currency-converter/cad-to-bdt-rate.html) | 89.570 | — | Bank, Cash Pickup, Mobile Wallet |
+| 7 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 89.000 | — | Bank, Mobile Wallet |
+| 8 | [Paysend](https://paysend.com/en-ca/send-money/from-canada-to-bangladesh) | 88.848 | 0.00 CAD | Bank, Card |
+| 9 | [WorldRemit](https://www.worldremit.com/en-ca/bangladesh) | 87.194 | — | Bank, Mobile Wallet, Cash Pickup |
 
 ### AUD to BDT
 
 | # | Provider | 1 AUD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [Remitly](https://www.remitly.com/au/en/bangladesh) | **88.590** | — | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AUD&To=BDT) | 86.075 | — | Bank |
-| 3 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 86.000 | — | Bank, Mobile Wallet |
-| 4 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 85.971 | — | Bank |
-| 5 | [OrbitRemit](https://www.orbitremit.com/currency-converter/aud-to-bdt) | 85.670 | — | Bank, Mobile Wallet |
-| 6 | [Instarem](https://www.instarem.com/en-us/currency-conversion/aud-to-bdt/) | 85.616 | — | Bank |
-| 7 | [Paysend](https://paysend.com/en-au/send-money/from-australia-to-bangladesh) | 84.324 | 2.90 AUD | Bank, Card |
+| **1** | [Western Union](https://www.westernunion.com/au/en/currency-converter/aud-to-bdt-rate.html) | **88.873** | — | Bank, Cash Pickup, Mobile Wallet |
+| 2 | [Remitly](https://www.remitly.com/au/en/bangladesh) | 88.590 | — | Bank, Mobile Wallet, Cash Pickup |
+| 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AUD&To=BDT) | 86.075 | — | Bank |
+| 4 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 86.000 | — | Bank, Mobile Wallet |
+| 5 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 85.971 | — | Bank |
+| 6 | [OrbitRemit](https://www.orbitremit.com/currency-converter/aud-to-bdt) | 85.670 | — | Bank, Mobile Wallet |
+| 7 | [Instarem](https://www.instarem.com/en-us/currency-conversion/aud-to-bdt/) | 85.616 | — | Bank |
+| 8 | [WorldRemit](https://www.worldremit.com/en-au/bangladesh) | 85.587 | — | Bank, Mobile Wallet, Cash Pickup |
+| 9 | [Paysend](https://paysend.com/en-au/send-money/from-australia-to-bangladesh) | 84.324 | 2.90 AUD | Bank, Card |
 
 ### SGD to BDT
 
@@ -141,7 +145,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-03-08T13:32:37.087246+00:00",
+  "updated_at": "2026-03-08T14:13:45.419821+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -159,4 +163,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-03-08 13:32 UTC*
+*Auto-generated on 2026-03-08 14:13 UTC*
