@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-03-08 08:16 UTC`
+**Last updated:** `2026-03-08 09:17 UTC`
 
 ## Why this exists
 
@@ -14,15 +14,15 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 USD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [Western Union](https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html) | **122.961** | — | Bank, Cash Pickup, Mobile Wallet |
-| 2 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT) | 122.424 | — | Bank |
-| 3 | [Wise](https://wise.com/us/currency-converter/usd-to-bdt-rate) | 122.300 | — | Bank |
-| 4 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 121.990 | — | Bank, Mobile Wallet, Cash Pickup |
-| 5 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 121.718 | 0.99 USD | Bank, Mobile Wallet |
-| 6 | [Instarem](https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/) | 121.648 | — | Bank |
-| 7 | [Paysend](https://paysend.com/en-us/send-money/from-the-united-states-of-america-to-bangladesh) | 121.613 | 0.00 USD | Bank, Card |
-| 8 | [NALA](https://www.nala.com/country/bangladesh) | 121.266 | — | Bank, Mobile Wallet |
-| 9 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.000 | — | Bank, Mobile Wallet |
+| **1** | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT) | **122.424** | — | Bank |
+| 2 | [Wise](https://wise.com/us/currency-converter/usd-to-bdt-rate) | 122.300 | — | Bank |
+| 3 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 121.990 | — | Bank, Mobile Wallet, Cash Pickup |
+| 4 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 121.718 | 0.99 USD | Bank, Mobile Wallet |
+| 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/) | 121.648 | — | Bank |
+| 6 | [Paysend](https://paysend.com/en-us/send-money/from-the-united-states-of-america-to-bangladesh) | 121.613 | 0.00 USD | Bank, Card |
+| 7 | [NALA](https://www.nala.com/country/bangladesh) | 121.266 | — | Bank, Mobile Wallet |
+| 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.000 | — | Bank, Mobile Wallet |
+| 9 | [WorldRemit](https://www.worldremit.com/en-us/bangladesh) | 120.899 | — | Bank, Mobile Wallet, Cash Pickup |
 | 10 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 119.468 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### GBP to BDT
@@ -139,7 +139,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-03-08T08:16:18.745867+00:00",
+  "updated_at": "2026-03-08T09:17:09.619066+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -157,4 +157,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-03-08 08:16 UTC*
+*Auto-generated on 2026-03-08 09:17 UTC*
