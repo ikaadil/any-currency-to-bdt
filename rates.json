@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-03-12T15:43:55.846003+00:00",
+    "updated_at": "2026-03-12T16:45:19.464582+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
@@ -72,34 +72,27 @@
                 "rate": 121.363,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
-            },
-            {
-                "provider": "Xoom",
-                "url": "https://www.xoom.com/bangladesh/send-money",
-                "rate": 119.981,
-                "delivery": "Bank, Cash Pickup, Mobile Wallet",
-                "fee": null
             }
         ],
         "GBP": [
             {
                 "provider": "Remitly",
                 "url": "https://www.remitly.com/gb/en/bangladesh",
-                "rate": 166.55,
+                "rate": 166.6,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
-            },
-            {
-                "provider": "Instarem",
-                "url": "https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/",
-                "rate": 164.316,
-                "delivery": "Bank",
                 "fee": null
             },
             {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=GBP&To=BDT",
                 "rate": 164.169,
+                "delivery": "Bank",
+                "fee": null
+            },
+            {
+                "provider": "Instarem",
+                "url": "https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/",
+                "rate": 164.149,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -120,22 +113,29 @@
             {
                 "provider": "Wise",
                 "url": "https://wise.com/gb/currency-converter/gbp-to-bdt-rate",
-                "rate": 163.89,
+                "rate": 163.835,
                 "delivery": "Bank",
                 "fee": null
             },
             {
                 "provider": "SendWave",
                 "url": "https://www.sendwave.com/en/currency-converter/gbp_gb-bdt_bd",
-                "rate": 163.21,
+                "rate": 163.1,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": 0.99
             },
             {
                 "provider": "NALA",
                 "url": "https://www.nala.com/country/bangladesh",
-                "rate": 161.751,
+                "rate": 161.859,
                 "delivery": "Bank, Mobile Wallet",
+                "fee": null
+            },
+            {
+                "provider": "WorldRemit",
+                "url": "https://www.worldremit.com/en-gb/bangladesh",
+                "rate": 158.996,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             }
         ],
@@ -143,7 +143,7 @@
             {
                 "provider": "TapTapSend",
                 "url": "https://www.taptapsend.com/send-money-to/bangladesh",
-                "rate": 142.02,
+                "rate": 141.53,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": null
             },
@@ -164,7 +164,7 @@
             {
                 "provider": "Wise",
                 "url": "https://wise.com/de/currency-converter/eur-to-bdt-rate",
-                "rate": 141.43,
+                "rate": 141.393,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -178,29 +178,22 @@
             {
                 "provider": "Paysend",
                 "url": "https://paysend.com/en-us/send-money/from-germany-to-bangladesh",
-                "rate": 140.796,
+                "rate": 140.869,
                 "delivery": "Bank, Card",
                 "fee": 1.5
             },
             {
                 "provider": "SendWave",
                 "url": "https://www.sendwave.com/en/currency-converter/eur_de-bdt_bd",
-                "rate": 140.771,
+                "rate": 140.785,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": 0.99
             },
             {
                 "provider": "NALA",
                 "url": "https://www.nala.com/country/bangladesh",
-                "rate": 140.097,
+                "rate": 140.189,
                 "delivery": "Bank, Mobile Wallet",
-                "fee": null
-            },
-            {
-                "provider": "Western Union",
-                "url": "https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html",
-                "rate": 138.25,
-                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             }
         ],
@@ -208,7 +201,7 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/cad-to-bdt/",
-                "rate": 90.187,
+                "rate": 90.201,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -220,9 +213,16 @@
                 "fee": null
             },
             {
+                "provider": "Remitly",
+                "url": "https://www.remitly.com/ca/en/bangladesh",
+                "rate": 90.08,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": null
+            },
+            {
                 "provider": "Wise",
                 "url": "https://wise.com/ca/currency-converter/cad-to-bdt-rate",
-                "rate": 90.091,
+                "rate": 90.072,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -234,18 +234,18 @@
                 "fee": null
             },
             {
-                "provider": "Remitly",
-                "url": "https://www.remitly.com/ca/en/bangladesh",
-                "rate": 90.02,
-                "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
-            },
-            {
                 "provider": "SendWave",
                 "url": "https://www.sendwave.com/en/currency-converter/cad_ca-bdt_bd",
-                "rate": 89.774,
+                "rate": 89.729,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": 1.99
+            },
+            {
+                "provider": "Paysend",
+                "url": "https://paysend.com/en-ca/send-money/from-canada-to-bangladesh",
+                "rate": 89.507,
+                "delivery": "Bank, Card",
+                "fee": 0.0
             },
             {
                 "provider": "TapTapSend",
@@ -255,18 +255,18 @@
                 "fee": null
             },
             {
-                "provider": "Paysend",
-                "url": "https://paysend.com/en-ca/send-money/from-canada-to-bangladesh",
-                "rate": 89.488,
-                "delivery": "Bank, Card",
-                "fee": 0.0
+                "provider": "WorldRemit",
+                "url": "https://www.worldremit.com/en-ca/bangladesh",
+                "rate": 87.204,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": null
             }
         ],
         "AUD": [
             {
                 "provider": "Remitly",
                 "url": "https://www.remitly.com/au/en/bangladesh",
-                "rate": 89.69,
+                "rate": 89.68,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             },
@@ -280,7 +280,7 @@
             {
                 "provider": "OrbitRemit",
                 "url": "https://www.orbitremit.com/currency-converter/aud-to-bdt",
-                "rate": 87.372,
+                "rate": 87.486,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": null
             },
@@ -301,26 +301,40 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/aud-to-bdt/",
-                "rate": 87.045,
+                "rate": 87.129,
                 "delivery": "Bank",
                 "fee": null
             },
             {
                 "provider": "Wise",
                 "url": "https://wise.com/au/currency-converter/aud-to-bdt-rate",
-                "rate": 86.964,
+                "rate": 87.031,
                 "delivery": "Bank",
+                "fee": null
+            },
+            {
+                "provider": "WorldRemit",
+                "url": "https://www.worldremit.com/en-au/bangladesh",
+                "rate": 86.612,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             },
             {
                 "provider": "Paysend",
                 "url": "https://paysend.com/en-au/send-money/from-australia-to-bangladesh",
-                "rate": 85.45,
+                "rate": 85.619,
                 "delivery": "Bank, Card",
                 "fee": 2.9
             }
         ],
         "SGD": [
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/sg/en/currency-converter/sgd-to-bdt-rate.html",
+                "rate": 96.458,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
+            },
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/",
@@ -338,7 +352,7 @@
             {
                 "provider": "Wise",
                 "url": "https://wise.com/sg/currency-converter/sgd-to-bdt-rate",
-                "rate": 96.024,
+                "rate": 96.028,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -368,7 +382,7 @@
             {
                 "provider": "Wise",
                 "url": "https://wise.com/ae/currency-converter/aed-to-bdt-rate",
-                "rate": 33.41,
+                "rate": 33.406,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -414,7 +428,7 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/sar-to-bdt/",
-                "rate": 32.734,
+                "rate": 32.733,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -428,7 +442,7 @@
             {
                 "provider": "Wise",
                 "url": "https://wise.com/sa/currency-converter/sar-to-bdt-rate",
-                "rate": 32.697,
+                "rate": 32.698,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -449,16 +463,16 @@
                 "fee": null
             },
             {
-                "provider": "Instarem",
-                "url": "https://www.instarem.com/en-us/currency-conversion/kwd-to-bdt/",
-                "rate": 400.07,
+                "provider": "Xe",
+                "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=KWD&To=BDT",
+                "rate": 400.067,
                 "delivery": "Bank",
                 "fee": null
             },
             {
-                "provider": "Xe",
-                "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=KWD&To=BDT",
-                "rate": 400.067,
+                "provider": "Instarem",
+                "url": "https://www.instarem.com/en-us/currency-conversion/kwd-to-bdt/",
+                "rate": 400.044,
                 "delivery": "Bank",
                 "fee": null
             }
