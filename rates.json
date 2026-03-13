@@ -1,8 +1,15 @@
 {
-    "updated_at": "2026-03-13T22:17:39.901581+00:00",
+    "updated_at": "2026-03-13T23:15:44.141217+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html",
+                "rate": 123.463,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
+            },
             {
                 "provider": "Ria",
                 "url": "https://www.riamoneytransfer.com/en-us/rates-conversion/?From=USD&To=BDT&Amount=1",
@@ -65,6 +72,13 @@
                 "rate": 121.5,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": null
+            },
+            {
+                "provider": "Xoom",
+                "url": "https://www.xoom.com/bangladesh/send-money",
+                "rate": 120.072,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
             }
         ],
         "GBP": [
@@ -92,7 +106,7 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/",
-                "rate": 162.389,
+                "rate": 162.494,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -122,13 +136,6 @@
                 "url": "https://www.nala.com/country/bangladesh",
                 "rate": 160.554,
                 "delivery": "Bank, Mobile Wallet",
-                "fee": null
-            },
-            {
-                "provider": "WorldRemit",
-                "url": "https://www.worldremit.com/en-gb/bangladesh",
-                "rate": 158.771,
-                "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             }
         ],
@@ -315,24 +322,17 @@
                 "fee": null
             },
             {
+                "provider": "Instarem",
+                "url": "https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/",
+                "rate": 95.784,
+                "delivery": "Bank",
+                "fee": null
+            },
+            {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=SGD&To=BDT",
                 "rate": 95.755,
                 "delivery": "Bank",
-                "fee": null
-            },
-            {
-                "provider": "Instarem",
-                "url": "https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/",
-                "rate": 95.687,
-                "delivery": "Bank",
-                "fee": null
-            },
-            {
-                "provider": "Western Union",
-                "url": "https://www.westernunion.com/sg/en/currency-converter/sgd-to-bdt-rate.html",
-                "rate": 95.585,
-                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
             {
@@ -451,7 +451,7 @@
             {
                 "provider": "Instarem",
                 "url": "https://www.instarem.com/en-us/currency-conversion/kwd-to-bdt/",
-                "rate": 399.289,
+                "rate": 399.302,
                 "delivery": "Bank",
                 "fee": null
             }
@@ -481,13 +481,6 @@
         ],
         "JPY": [
             {
-                "provider": "Instarem",
-                "url": "https://www.instarem.com/en-us/currency-conversion/jpy-to-bdt/",
-                "rate": 0.769,
-                "delivery": "Bank",
-                "fee": null
-            },
-            {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=JPY&To=BDT",
                 "rate": 0.769,
@@ -497,6 +490,13 @@
             {
                 "provider": "Wise",
                 "url": "https://wise.com/jp/currency-converter/jpy-to-bdt-rate",
+                "rate": 0.768,
+                "delivery": "Bank",
+                "fee": null
+            },
+            {
+                "provider": "Instarem",
+                "url": "https://www.instarem.com/en-us/currency-conversion/jpy-to-bdt/",
                 "rate": 0.768,
                 "delivery": "Bank",
                 "fee": null
