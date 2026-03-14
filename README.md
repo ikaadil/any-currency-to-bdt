@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-03-14 15:15 UTC`
+**Last updated:** `2026-03-14 16:15 UTC`
 
 ## Why this exists
 
@@ -42,8 +42,8 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | # | Provider | 1 EUR = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
 | **1** | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=EUR&To=BDT&Amount=1) | **140.844** | — | Bank, Cash Pickup, Mobile Wallet |
-| 2 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 140.710 | — | Bank, Mobile Wallet |
-| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/eur-to-bdt/) | 140.704 | — | Bank |
+| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/eur-to-bdt/) | 140.704 | — | Bank |
+| 3 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 140.660 | — | Bank, Mobile Wallet |
 | 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=EUR&To=BDT) | 140.260 | — | Bank |
 | 5 | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | 140.080 | — | Bank |
 | 6 | [SendWave](https://www.sendwave.com/en/currency-converter/eur_de-bdt_bd) | 139.583 | 0.99 EUR | Bank, Mobile Wallet |
@@ -80,7 +80,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 SGD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=SGD&To=BDT&Amount=1) | **96.122** | Bank, Cash Pickup, Mobile Wallet |
+| **1** | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=SGD&To=BDT&Amount=1) | **95.771** | Bank, Cash Pickup, Mobile Wallet |
 | 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | 95.746 | Bank |
 | 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=SGD&To=BDT) | 95.691 | Bank |
 | 4 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 95.583 | Bank |
@@ -142,7 +142,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-03-14T15:15:49.870324+00:00",
+  "updated_at": "2026-03-14T16:15:59.530690+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -160,4 +160,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-03-14 15:15 UTC*
+*Auto-generated on 2026-03-14 16:15 UTC*
