@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-03-15 15:16 UTC`
+**Last updated:** `2026-03-15 16:17 UTC`
 
 ## Why this exists
 
@@ -14,7 +14,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 USD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [MoneyGram](https://www.moneygram.com/us/en/corridor/bangladesh) | **123.750** | — | Bank, Cash Pickup, Mobile Wallet |
+| **1** | [Western Union](https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html) | **123.463** | — | Bank, Cash Pickup, Mobile Wallet |
 | 2 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=USD&To=BDT&Amount=1) | 122.835 | — | Bank, Cash Pickup, Mobile Wallet |
 | 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT) | 122.751 | — | Bank |
 | 4 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 122.720 | — | Bank, Mobile Wallet, Cash Pickup |
@@ -56,8 +56,8 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 CAD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=CAD&To=BDT) | **89.497** | — | Bank |
-| 2 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=CAD&To=BDT&Amount=1) | 89.446 | — | Bank, Cash Pickup, Mobile Wallet |
+| **1** | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=CAD&To=BDT&Amount=1) | **89.553** | — | Bank, Cash Pickup, Mobile Wallet |
+| 2 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=CAD&To=BDT) | 89.497 | — | Bank |
 | 3 | [Remitly](https://www.remitly.com/ca/en/bangladesh) | 89.430 | — | Bank, Mobile Wallet, Cash Pickup |
 | 4 | [Wise](https://wise.com/ca/currency-converter/cad-to-bdt-rate) | 89.418 | — | Bank |
 | 5 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 89.000 | — | Bank, Mobile Wallet |
@@ -69,7 +69,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 AUD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [Remitly](https://www.remitly.com/au/en/bangladesh) | **88.410** | — | Bank, Mobile Wallet, Cash Pickup |
+| **1** | [Remitly](https://www.remitly.com/au/en/bangladesh) | **88.400** | — | Bank, Mobile Wallet, Cash Pickup |
 | 2 | [OrbitRemit](https://www.orbitremit.com/currency-converter/aud-to-bdt) | 87.598 | — | Bank, Mobile Wallet |
 | 3 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 86.000 | — | Bank, Mobile Wallet |
 | 4 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=AUD&To=BDT&Amount=1) | 85.765 | — | Bank, Cash Pickup, Mobile Wallet |
@@ -144,7 +144,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-03-15T15:16:59.937310+00:00",
+  "updated_at": "2026-03-15T16:17:11.976880+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -162,4 +162,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-03-15 15:16 UTC*
+*Auto-generated on 2026-03-15 16:17 UTC*
