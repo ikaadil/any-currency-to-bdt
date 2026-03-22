@@ -1,8 +1,15 @@
 {
-    "updated_at": "2026-03-22T17:15:29.041057+00:00",
+    "updated_at": "2026-03-22T18:18:56.030980+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html",
+                "rate": 123.413,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
+            },
             {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT",
@@ -136,7 +143,7 @@
             {
                 "provider": "Ria",
                 "url": "https://www.riamoneytransfer.com/en-us/rates-conversion/?From=EUR&To=BDT&Amount=1",
-                "rate": 142.353,
+                "rate": 142.338,
                 "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
@@ -169,18 +176,25 @@
                 "fee": 0.99
             },
             {
-                "provider": "NALA",
-                "url": "https://www.nala.com/country/bangladesh",
-                "rate": 141.079,
-                "delivery": "Bank, Mobile Wallet",
-                "fee": null
-            },
-            {
                 "provider": "Paysend",
                 "url": "https://paysend.com/en-us/send-money/from-germany-to-bangladesh",
                 "rate": 140.996,
                 "delivery": "Bank, Card",
                 "fee": 1.5
+            },
+            {
+                "provider": "NALA",
+                "url": "https://www.nala.com/country/bangladesh",
+                "rate": 140.685,
+                "delivery": "Bank, Mobile Wallet",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html",
+                "rate": 138.283,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
             }
         ],
         "CAD": [
@@ -236,16 +250,23 @@
             {
                 "provider": "Paysend",
                 "url": "https://paysend.com/en-ca/send-money/from-canada-to-bangladesh",
-                "rate": 88.569,
+                "rate": 88.543,
                 "delivery": "Bank, Card",
                 "fee": 3.0
             }
         ],
         "AUD": [
             {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/au/en/currency-converter/aud-to-bdt-rate.html",
+                "rate": 89.391,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
+            },
+            {
                 "provider": "Remitly",
                 "url": "https://www.remitly.com/au/en/bangladesh",
-                "rate": 88.87,
+                "rate": 88.82,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             },
@@ -294,7 +315,7 @@
             {
                 "provider": "Paysend",
                 "url": "https://paysend.com/en-au/send-money/from-australia-to-bangladesh",
-                "rate": 84.513,
+                "rate": 84.465,
                 "delivery": "Bank, Card",
                 "fee": 2.9
             }
@@ -471,6 +492,13 @@
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=JPY&To=BDT",
                 "rate": 0.772,
                 "delivery": "Bank",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/jp/en/currency-converter/jpy-to-bdt-rate.html",
+                "rate": 0.772,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
             {
