@@ -1,15 +1,8 @@
 {
-    "updated_at": "2026-03-28T14:20:58.179419+00:00",
+    "updated_at": "2026-03-28T15:18:37.281130+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
-            {
-                "provider": "MoneyGram",
-                "url": "https://www.moneygram.com/us/en/corridor/bangladesh",
-                "rate": 123.68,
-                "delivery": "Bank, Cash Pickup, Mobile Wallet",
-                "fee": null
-            },
             {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT",
@@ -188,6 +181,13 @@
                 "rate": 140.393,
                 "delivery": "Bank, Card",
                 "fee": 1.5
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html",
+                "rate": 137.69,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
             }
         ],
         "CAD": [
@@ -289,6 +289,13 @@
                 "url": "https://wise.com/au/currency-converter/aud-to-bdt-rate",
                 "rate": 84.344,
                 "delivery": "Bank",
+                "fee": null
+            },
+            {
+                "provider": "WorldRemit",
+                "url": "https://www.worldremit.com/en-au/bangladesh",
+                "rate": 83.927,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             },
             {
