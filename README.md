@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-04-18 16:24 UTC`
+**Last updated:** `2026-04-18 17:26 UTC`
 
 ## Why this exists
 
@@ -22,10 +22,9 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 6 | [Paysend](https://paysend.com/en-us/send-money/from-the-united-states-of-america-to-bangladesh) | 122.519 | 0.00 USD | Bank, Card |
 | 7 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 122.087 | 0.99 USD | Bank, Mobile Wallet |
 | 8 | [NALA](https://www.nala.com/country/bangladesh) | 121.852 | — | Bank, Mobile Wallet |
-| 9 | [Western Union](https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html) | 121.849 | — | Bank, Cash Pickup, Mobile Wallet |
-| 10 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.550 | — | Bank, Mobile Wallet |
-| 11 | [WorldRemit](https://www.worldremit.com/en-us/bangladesh) | 121.264 | — | Bank, Mobile Wallet, Cash Pickup |
-| 12 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 119.963 | — | Bank, Cash Pickup, Mobile Wallet |
+| 9 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.550 | — | Bank, Mobile Wallet |
+| 10 | [WorldRemit](https://www.worldremit.com/en-us/bangladesh) | 121.264 | — | Bank, Mobile Wallet, Cash Pickup |
+| 11 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 119.963 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### GBP to BDT
 
@@ -67,6 +66,8 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 6 | [SendWave](https://www.sendwave.com/en/currency-converter/cad_ca-bdt_bd) | 89.157 | 1.99 CAD | Bank, Mobile Wallet |
 | 7 | [Paysend](https://paysend.com/en-ca/send-money/from-canada-to-bangladesh) | 88.605 | 3.00 CAD | Bank, Card |
 | 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 87.760 | — | Bank, Mobile Wallet |
+| 9 | [Western Union](https://www.westernunion.com/ca/en/currency-converter/cad-to-bdt-rate.html) | 87.529 | — | Bank, Cash Pickup, Mobile Wallet |
+| 10 | [WorldRemit](https://www.worldremit.com/en-ca/bangladesh) | 86.648 | — | Bank, Mobile Wallet, Cash Pickup |
 
 ### AUD to BDT
 
@@ -87,8 +88,8 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 |--:|----------|---------------:|----------|
 | **1** | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | **96.965** | Bank |
 | 2 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 96.773 | Bank |
-| 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=SGD&To=BDT) | 96.617 | Bank |
-| 4 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=SGD&To=BDT&Amount=1) | 96.558 | Bank, Cash Pickup, Mobile Wallet |
+| 3 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=SGD&To=BDT&Amount=1) | 96.734 | Bank, Cash Pickup, Mobile Wallet |
+| 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=SGD&To=BDT) | 96.617 | Bank |
 
 ### AED to BDT
 
@@ -106,7 +107,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 |--:|----------|---------------:|----------|
 | **1** | [Instarem](https://www.instarem.com/en-us/currency-conversion/myr-to-bdt/) | **31.159** | Bank |
 | 2 | [Wise](https://wise.com/my/currency-converter/myr-to-bdt-rate) | 31.111 | Bank |
-| 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=MYR&To=BDT) | 31.083 | Bank |
+| 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=MYR&To=BDT) | 31.048 | Bank |
 
 ### SAR to BDT
 
@@ -148,7 +149,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-04-18T16:24:15.902373+00:00",
+  "updated_at": "2026-04-18T17:26:15.043630+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -166,4 +167,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-04-18 16:24 UTC*
+*Auto-generated on 2026-04-18 17:26 UTC*
