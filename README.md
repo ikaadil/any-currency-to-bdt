@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-04-25 11:29 UTC`
+**Last updated:** `2026-04-25 12:32 UTC`
 
 ## Why this exists
 
@@ -38,7 +38,6 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 6 | [SendWave](https://www.sendwave.com/en/currency-converter/gbp_gb-bdt_bd) | 165.415 | 0.99 GBP | Bank, Mobile Wallet |
 | 7 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=GBP&To=BDT&Amount=1) | 165.248 | — | Bank, Cash Pickup, Mobile Wallet |
 | 8 | [NALA](https://www.nala.com/country/bangladesh) | 164.291 | — | Bank, Mobile Wallet |
-| 9 | [WorldRemit](https://www.worldremit.com/en-gb/bangladesh) | 159.686 | — | Bank, Mobile Wallet, Cash Pickup |
 
 ### EUR to BDT
 
@@ -137,10 +136,10 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 JPY = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=JPY&To=BDT) | **0.771** | Bank |
-| **2** | [Western Union](https://www.westernunion.com/jp/en/currency-converter/jpy-to-bdt-rate.html) | **0.771** | Bank, Cash Pickup, Mobile Wallet |
-| 3 | [Wise](https://wise.com/jp/currency-converter/jpy-to-bdt-rate) | 0.770 | Bank |
-| 4 | [Instarem](https://www.instarem.com/en-us/currency-conversion/jpy-to-bdt/) | 0.770 | Bank |
+| **1** | [Western Union](https://www.westernunion.com/jp/en/currency-converter/jpy-to-bdt-rate.html) | **0.771** | Bank, Cash Pickup, Mobile Wallet |
+| 2 | [Wise](https://wise.com/jp/currency-converter/jpy-to-bdt-rate) | 0.770 | Bank |
+| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/jpy-to-bdt/) | 0.770 | Bank |
+| 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=JPY&To=BDT) | 0.770 | Bank |
 
 ## Data
 
@@ -148,7 +147,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-04-25T11:29:03.303355+00:00",
+  "updated_at": "2026-04-25T12:32:43.490015+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -166,4 +165,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-04-25 11:29 UTC*
+*Auto-generated on 2026-04-25 12:32 UTC*
