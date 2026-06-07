@@ -628,11 +628,16 @@ class Xoom(Provider):
         return self._cache.get(src)
 
 
+_RIA_VALID_RANGES = {
+    "USD": (80, 150), "GBP": (140, 200), "EUR": (120, 170), "CAD": (75, 110),
+    "AUD": (75, 110), "SGD": (85, 110), "AED": (25, 45), "MYR": (25, 40),
+    "SAR": (28, 45), "KWD": (350, 450), "QAR": (28, 45), "JPY": (0.1, 2),
+}
+
 def _valid_ria_rate(rate: float, src: str) -> bool:
-    """1 JPY ≈ 0.78 BDT; other currencies in 5–1000 range. Reject e.g. 78 for JPY (likely 100 JPY = 78 BDT)."""
-    if src == "JPY":
-        return 0.1 < rate < 2
-    return 5 < rate < 1000
+    """Rate must fall within plausible BDT-per-unit range for the source currency."""
+    lo, hi = _RIA_VALID_RANGES.get(src, (5, 1000))
+    return lo <= rate <= hi
 
 
 def _parse_ria_from_html(html: str, src: str) -> float | None:
