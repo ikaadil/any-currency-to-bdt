@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-06-20T15:26:30.753107+00:00",
+    "updated_at": "2026-06-20T17:10:42.979564+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
@@ -65,6 +65,13 @@
                 "rate": 121.169,
                 "delivery": "Bank, Mobile Wallet",
                 "fee": null
+            },
+            {
+                "provider": "Xoom",
+                "url": "https://www.xoom.com/bangladesh/send-money",
+                "rate": 119.921,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
             }
         ],
         "GBP": [
@@ -73,6 +80,13 @@
                 "url": "https://www.remitly.com/gb/en/bangladesh",
                 "rate": 165.19,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/gb/en/currency-converter/gbp-to-bdt-rate.html",
+                "rate": 164.489,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
             {
@@ -285,13 +299,6 @@
                 "fee": null
             },
             {
-                "provider": "WorldRemit",
-                "url": "https://www.worldremit.com/en-au/bangladesh",
-                "rate": 85.863,
-                "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
-            },
-            {
                 "provider": "Paysend",
                 "url": "https://paysend.com/en-au/send-money/from-australia-to-bangladesh",
                 "rate": 85.57,
@@ -480,13 +487,6 @@
             }
         ],
         "JPY": [
-            {
-                "provider": "Western Union",
-                "url": "https://www.westernunion.com/jp/en/currency-converter/jpy-to-bdt-rate.html",
-                "rate": 0.763,
-                "delivery": "Bank, Cash Pickup, Mobile Wallet",
-                "fee": null
-            },
             {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=JPY&To=BDT",
