@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-06-20 23:55 UTC`
+**Last updated:** `2026-06-21 02:12 UTC`
 
 ## Why this exists
 
@@ -20,25 +20,23 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 4 | [Wise](https://wise.com/us/currency-converter/usd-to-bdt-rate) | 122.750 | — | Bank |
 | 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/) | 122.708 | — | Bank |
 | 6 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 122.500 | — | Bank, Mobile Wallet, Cash Pickup |
-| 7 | [Western Union](https://www.westernunion.com/us/en/currency-converter/usd-to-bdt-rate.html) | 121.949 | — | Bank, Cash Pickup, Mobile Wallet |
-| 8 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 121.757 | 0.99 USD | Bank, Mobile Wallet |
-| 9 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.180 | — | Bank, Mobile Wallet |
-| 10 | [NALA](https://www.nala.com/country/bangladesh) | 121.169 | — | Bank, Mobile Wallet |
-| 11 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 119.921 | — | Bank, Cash Pickup, Mobile Wallet |
+| 7 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 121.757 | 0.99 USD | Bank, Mobile Wallet |
+| 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.180 | — | Bank, Mobile Wallet |
+| 9 | [NALA](https://www.nala.com/country/bangladesh) | 121.169 | — | Bank, Mobile Wallet |
+| 10 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 119.921 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### GBP to BDT
 
 | # | Provider | 1 GBP = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
 | **1** | [Remitly](https://www.remitly.com/gb/en/bangladesh) | **165.190** | — | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [Western Union](https://www.westernunion.com/gb/en/currency-converter/gbp-to-bdt-rate.html) | 164.489 | — | Bank, Cash Pickup, Mobile Wallet |
-| 3 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 162.750 | — | Bank, Mobile Wallet |
-| 4 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=GBP&To=BDT&Amount=1) | 162.651 | — | Bank, Cash Pickup, Mobile Wallet |
-| 5 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=GBP&To=BDT) | 162.511 | — | Bank |
-| 6 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 162.429 | — | Bank |
-| 7 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 162.418 | — | Bank |
-| 8 | [SendWave](https://www.sendwave.com/en/currency-converter/gbp_gb-bdt_bd) | 161.874 | 0.99 GBP | Bank, Mobile Wallet |
-| 9 | [NALA](https://www.nala.com/country/bangladesh) | 160.119 | — | Bank, Mobile Wallet |
+| 2 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 162.750 | — | Bank, Mobile Wallet |
+| 3 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=GBP&To=BDT&Amount=1) | 162.651 | — | Bank, Cash Pickup, Mobile Wallet |
+| 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=GBP&To=BDT) | 162.511 | — | Bank |
+| 5 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 162.429 | — | Bank |
+| 6 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 162.418 | — | Bank |
+| 7 | [SendWave](https://www.sendwave.com/en/currency-converter/gbp_gb-bdt_bd) | 161.874 | 0.99 GBP | Bank, Mobile Wallet |
+| 8 | [NALA](https://www.nala.com/country/bangladesh) | 160.119 | — | Bank, Mobile Wallet |
 
 ### EUR to BDT
 
@@ -52,6 +50,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 6 | [Paysend](https://paysend.com/en-us/send-money/from-germany-to-bangladesh) | 140.647 | 0.00 EUR | Bank, Card |
 | 7 | [SendWave](https://www.sendwave.com/en/currency-converter/eur_de-bdt_bd) | 140.315 | 0.99 EUR | Bank, Mobile Wallet |
 | 8 | [NALA](https://www.nala.com/country/bangladesh) | 138.674 | — | Bank, Mobile Wallet |
+| 9 | [Western Union](https://www.westernunion.com/de/en/currency-converter/eur-to-bdt-rate.html) | 138.208 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### CAD to BDT
 
@@ -75,9 +74,10 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AUD&To=BDT) | 86.297 | — | Bank |
 | 4 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 86.085 | — | Bank |
 | 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/aud-to-bdt/) | 86.066 | — | Bank |
-| 6 | [Paysend](https://paysend.com/en-au/send-money/from-australia-to-bangladesh) | 85.570 | 0.00 AUD | Bank, Card |
-| 7 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 85.400 | — | Bank, Mobile Wallet |
-| 8 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=AUD&To=BDT&Amount=1) | 77.782 | — | Bank, Cash Pickup, Mobile Wallet |
+| 6 | [WorldRemit](https://www.worldremit.com/en-au/bangladesh) | 85.863 | — | Bank, Mobile Wallet, Cash Pickup |
+| 7 | [Paysend](https://paysend.com/en-au/send-money/from-australia-to-bangladesh) | 85.570 | 0.00 AUD | Bank, Card |
+| 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 85.400 | — | Bank, Mobile Wallet |
+| 9 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=AUD&To=BDT&Amount=1) | 77.782 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### SGD to BDT
 
@@ -93,7 +93,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | # | Provider | 1 AED = BDT | Delivery |
 |--:|----------|---------------:|----------|
 | **1** | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=AED&To=BDT&Amount=1) | **33.469** | Bank, Cash Pickup, Mobile Wallet |
-| 2 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AED&To=BDT) | 33.440 | Bank |
+| 2 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AED&To=BDT) | 33.436 | Bank |
 | 3 | [Wise](https://wise.com/ae/currency-converter/aed-to-bdt-rate) | 33.420 | Bank |
 | 4 | [Instarem](https://www.instarem.com/en-us/currency-conversion/aed-to-bdt/) | 33.408 | Bank |
 | 5 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 33.270 | Bank, Mobile Wallet |
@@ -146,7 +146,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-06-20T23:55:44.895059+00:00",
+  "updated_at": "2026-06-21T02:12:41.232947+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -164,4 +164,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-06-20 23:55 UTC*
+*Auto-generated on 2026-06-21 02:12 UTC*
