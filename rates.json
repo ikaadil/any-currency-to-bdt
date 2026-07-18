@@ -1,5 +1,5 @@
 {
-    "updated_at": "2026-07-18T19:56:12.552144+00:00",
+    "updated_at": "2026-07-18T20:35:24.129295+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
@@ -53,13 +53,6 @@
                 "fee": 0.99
             },
             {
-                "provider": "WorldRemit",
-                "url": "https://www.worldremit.com/en-us/bangladesh",
-                "rate": 122.055,
-                "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
-            },
-            {
                 "provider": "TapTapSend",
                 "url": "https://www.taptapsend.com/send-money-to/bangladesh",
                 "rate": 122.0,
@@ -80,6 +73,13 @@
                 "url": "https://www.remitly.com/gb/en/bangladesh",
                 "rate": 168.57,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/gb/en/currency-converter/gbp-to-bdt-rate.html",
+                "rate": 167.264,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
             {
@@ -473,6 +473,13 @@
             }
         ],
         "JPY": [
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/jp/en/currency-converter/jpy-to-bdt-rate.html",
+                "rate": 0.761,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
+                "fee": null
+            },
             {
                 "provider": "Wise",
                 "url": "https://wise.com/jp/currency-converter/jpy-to-bdt-rate",
