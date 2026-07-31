@@ -30,21 +30,34 @@ def _valid_ria_rate(rate: float, src: str) -> bool:
 
 
 def _parse_ria_from_html(html: str, src: str) -> float | None:
-    """Parse Ria rate from HTML text. Prefer '1.00000 = RATE' then min of valid BDT values."""
+    """Parse Ria rate from HTML. Prefer JSON-LD, then explicit '1 SRC = RATE BDT', then table."""
+    # 1. JSON-LD structured data (most reliable, always present in Ria pages)
+    m = re.search(r'"price"\s*:\s*"([\d.]+)"\s*,?\s*"priceCurrency"\s*:\s*"BDT"', html)
+    if m:
+        rate = float(m.group(1))
+        if _valid_ria_rate(rate, src):
+            return rate
+
     text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
-    m = re.search(r"1\.0+\s*=\s*([\d.]+)", text)
+
+    # 2. "1.00 SRC = RATE BDT" (hero text with currency code)
+    m = re.search(rf"1\.0*\s*{re.escape(src)}\s*=\s*([\d,.]+)\s*BDT", text, re.I)
     if m:
-        rate = float(m.group(1))
+        rate = float(m.group(1).replace(",", ""))
         if _valid_ria_rate(rate, src):
             return rate
-    m = re.search(r"=\s*([\d]{2,4}\.\d{1,6})\s", text)
+
+    # 3. Table row: "1 SRC RATE BDT" (no = sign, e.g. "1 USD123.48873 BDT")
+    m = re.search(rf"1\s*{re.escape(src)}\s*([\d,.]+)\s*BDT", text, re.I)
     if m:
-        rate = float(m.group(1))
+        rate = float(m.group(1).replace(",", ""))
         if _valid_ria_rate(rate, src):
             return rate
-    matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
+
+    # 4. Fallback: find standalone numbers (not fragments of larger comma-separated values)
+    matches = re.findall(r"(?<![\d,])(\d{2,4}\.\d{1,6})\s*BDT", text)
     valid = [float(x) for x in matches if _valid_ria_rate(float(x), src)]
-    return min(valid) if valid else None
+    return max(valid) if valid else None
 
 
 def _scrapling_body(page) -> str:
