@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-08-15 03:26 UTC`
+**Last updated:** `2026-08-15 04:22 UTC`
 
 ## Why this exists
 
@@ -14,7 +14,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 USD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [Remitly](https://www.remitly.com/us/en/bangladesh) | **123.070** | — | Bank, Mobile Wallet, Cash Pickup |
+| **1** | [Remitly](https://www.remitly.com/us/en/bangladesh) | **123.060** | — | Bank, Mobile Wallet, Cash Pickup |
 | 2 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 122.848 | 1.59 USD | Bank, Mobile Wallet |
 | 3 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=USD&To=BDT&Amount=1) | 122.806 | — | Bank, Cash Pickup, Mobile Wallet |
 | 4 | [Wise](https://wise.com/us/currency-converter/usd-to-bdt-rate) | 122.750 | — | Bank |
@@ -33,7 +33,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 2 | [SendWave](https://www.sendwave.com/en/currency-converter/gbp_gb-bdt_bd) | 166.317 | 1.59 GBP | Bank, Mobile Wallet |
 | 3 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 166.124 | — | Bank |
 | 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=GBP&To=BDT) | 166.068 | — | Bank |
-| 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 165.987 | — | Bank |
+| 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 165.957 | — | Bank |
 | 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 165.750 | — | Bank, Mobile Wallet |
 | 7 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=GBP&To=BDT&Amount=1) | 165.669 | — | Bank, Cash Pickup, Mobile Wallet |
 | 8 | [NALA](https://www.nala.com/country/bangladesh) | 165.278 | — | Bank, Mobile Wallet |
@@ -63,7 +63,6 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 6 | [SendWave](https://www.sendwave.com/en/currency-converter/cad_ca-bdt_bd) | 88.083 | 1.99 CAD | Bank, Mobile Wallet |
 | 7 | [Paysend](https://paysend.com/en-ca/send-money/from-canada-to-bangladesh) | 87.464 | 3.00 CAD | Bank, Card |
 | 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 86.500 | — | Bank, Mobile Wallet |
-| 9 | [WorldRemit](https://www.worldremit.com/en-ca/bangladesh) | 85.604 | — | Bank, Mobile Wallet, Cash Pickup |
 
 ### AUD to BDT
 
@@ -75,7 +74,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AUD&To=BDT) | 86.937 | — | Bank |
 | 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/aud-to-bdt/) | 86.840 | — | Bank |
 | 6 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=AUD&To=BDT&Amount=1) | 86.750 | — | Bank, Cash Pickup, Mobile Wallet |
-| 7 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 85.800 | — | Bank, Mobile Wallet |
+| 7 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 85.860 | — | Bank, Mobile Wallet |
 | 8 | [Paysend](https://paysend.com/en-au/send-money/from-australia-to-bangladesh) | 84.532 | 2.90 AUD | Bank, Card |
 
 ### SGD to BDT
@@ -91,7 +90,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 AED = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | **33.500** | Bank, Mobile Wallet |
+| **1** | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | **33.480** | Bank, Mobile Wallet |
 | 2 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=AED&To=BDT&Amount=1) | 33.439 | Bank, Cash Pickup, Mobile Wallet |
 | 3 | [Wise](https://wise.com/ae/currency-converter/aed-to-bdt-rate) | 33.422 | Bank |
 | 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AED&To=BDT) | 33.414 | Bank |
@@ -145,7 +144,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-08-15T03:26:20.844444+00:00",
+  "updated_at": "2026-08-15T04:22:44.260471+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -163,4 +162,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-08-15 03:26 UTC*
+*Auto-generated on 2026-08-15 04:22 UTC*
