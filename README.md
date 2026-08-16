@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-08-16 04:22 UTC`
+**Last updated:** `2026-08-16 05:16 UTC`
 
 ## Why this exists
 
@@ -23,6 +23,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 7 | [NALA](https://www.nala.com/country/bangladesh) | 122.200 | — | Bank, Mobile Wallet |
 | 8 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 122.000 | — | Bank, Mobile Wallet |
 | 9 | [Paysend](https://paysend.com/en-us/send-money/from-the-united-states-of-america-to-bangladesh) | 121.373 | 1.99 USD | Bank, Card |
+| 10 | [Xoom](https://www.xoom.com/bangladesh/send-money) | 120.064 | — | Bank, Cash Pickup, Mobile Wallet |
 
 ### GBP to BDT
 
@@ -143,7 +144,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-08-16T04:22:31.476907+00:00",
+  "updated_at": "2026-08-16T05:16:12.264341+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -161,4 +162,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-08-16 04:22 UTC*
+*Auto-generated on 2026-08-16 05:16 UTC*
