@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-09-05 20:45 UTC`
+**Last updated:** `2026-09-05 22:23 UTC`
 
 ## Why this exists
 
@@ -18,7 +18,7 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/usd-to-bdt/) | 122.893 | — | Bank |
 | 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT) | 122.888 | — | Bank |
 | 4 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=USD&To=BDT&Amount=1) | 122.859 | — | Bank, Cash Pickup, Mobile Wallet |
-| 5 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 122.800 | — | Bank, Mobile Wallet, Cash Pickup |
+| 5 | [Remitly](https://www.remitly.com/us/en/bangladesh) | 122.810 | — | Bank, Mobile Wallet, Cash Pickup |
 | 6 | [SendWave](https://www.sendwave.com/en/currency-converter/usd_us-bdt_bd) | 122.685 | 1.59 USD | Bank, Mobile Wallet |
 | 7 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 121.900 | — | Bank, Mobile Wallet |
 | 8 | [Paysend](https://paysend.com/en-us/send-money/from-the-united-states-of-america-to-bangladesh) | 121.169 | 1.99 USD | Bank, Card |
@@ -44,10 +44,10 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | # | Provider | 1 EUR = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
 | **1** | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=EUR&To=BDT) | **143.349** | — | Bank |
-| 2 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 142.830 | — | Bank, Mobile Wallet |
-| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/eur-to-bdt/) | 142.798 | — | Bank |
-| 4 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=EUR&To=BDT&Amount=1) | 142.738 | — | Bank, Cash Pickup, Mobile Wallet |
-| 5 | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | 142.730 | — | Bank |
+| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/eur-to-bdt/) | 142.798 | — | Bank |
+| 3 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=EUR&To=BDT&Amount=1) | 142.738 | — | Bank, Cash Pickup, Mobile Wallet |
+| 4 | [Wise](https://wise.com/de/currency-converter/eur-to-bdt-rate) | 142.730 | — | Bank |
+| 5 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 142.660 | — | Bank, Mobile Wallet |
 | 6 | [Paysend](https://paysend.com/en-us/send-money/from-germany-to-bangladesh) | 142.139 | 0.00 EUR | Bank, Card |
 | 7 | [SendWave](https://www.sendwave.com/en/currency-converter/eur_de-bdt_bd) | 141.778 | 0.99 EUR | Bank, Mobile Wallet |
 | 8 | [NALA](https://www.nala.com/country/bangladesh) | 139.338 | — | Bank, Mobile Wallet |
@@ -136,8 +136,9 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 |--:|----------|---------------:|----------|
 | **1** | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=JPY&To=BDT) | **0.790** | Bank |
 | 2 | [Wise](https://wise.com/jp/currency-converter/jpy-to-bdt-rate) | 0.787 | Bank |
-| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/jpy-to-bdt/) | 0.786 | Bank |
-| 4 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=JPY&To=BDT&Amount=1) | 0.786 | Bank, Cash Pickup, Mobile Wallet |
+| 3 | [Western Union](https://www.westernunion.com/jp/en/currency-converter/jpy-to-bdt-rate.html) | 0.787 | Bank, Cash Pickup, Mobile Wallet |
+| 4 | [Instarem](https://www.instarem.com/en-us/currency-conversion/jpy-to-bdt/) | 0.786 | Bank |
+| 5 | [Ria](https://www.riamoneytransfer.com/en-us/rates-conversion/?From=JPY&To=BDT&Amount=1) | 0.786 | Bank, Cash Pickup, Mobile Wallet |
 
 ## Data
 
@@ -145,7 +146,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-09-05T20:45:18.840173+00:00",
+  "updated_at": "2026-09-05T22:23:18.143590+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -163,4 +164,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-09-05 20:45 UTC*
+*Auto-generated on 2026-09-05 22:23 UTC*
