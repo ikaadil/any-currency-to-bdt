@@ -1,12 +1,12 @@
 {
-    "updated_at": "2026-09-19T19:03:12.815003+00:00",
+    "updated_at": "2026-09-19T21:48:39.352009+00:00",
     "target": "BDT",
     "rates": {
         "USD": [
             {
                 "provider": "Xe",
                 "url": "https://www.xe.com/currencyconverter/convert/?Amount=1&From=USD&To=BDT",
-                "rate": 122.826,
+                "rate": 123.171,
                 "delivery": "Bank",
                 "fee": null
             },
@@ -80,6 +80,13 @@
                 "url": "https://www.remitly.com/gb/en/bangladesh",
                 "rate": 166.92,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": null
+            },
+            {
+                "provider": "Western Union",
+                "url": "https://www.westernunion.com/gb/en/currency-converter/gbp-to-bdt-rate.html",
+                "rate": 166.561,
+                "delivery": "Bank, Cash Pickup, Mobile Wallet",
                 "fee": null
             },
             {
@@ -245,13 +252,6 @@
                 "url": "https://www.taptapsend.com/send-money-to/bangladesh",
                 "rate": 86.0,
                 "delivery": "Bank, Mobile Wallet",
-                "fee": null
-            },
-            {
-                "provider": "WorldRemit",
-                "url": "https://www.worldremit.com/en-ca/bangladesh",
-                "rate": 84.868,
-                "delivery": "Bank, Mobile Wallet, Cash Pickup",
                 "fee": null
             }
         ],
