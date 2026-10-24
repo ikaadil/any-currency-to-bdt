@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-10-23 23:35 UTC`
+**Last updated:** `2026-10-24 02:03 UTC`
 
 ## Why this exists
 
@@ -33,9 +33,8 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 | 3 | [Wise](https://wise.com/gb/currency-converter/gbp-to-bdt-rate) | 165.441 | — | Bank |
 | 4 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=GBP&To=BDT) | 165.359 | — | Bank |
 | 5 | [Instarem](https://www.instarem.com/en-us/currency-conversion/gbp-to-bdt/) | 165.291 | — | Bank |
-| 6 | [Western Union](https://www.westernunion.com/gb/en/currency-converter/gbp-to-bdt-rate.html) | 164.572 | — | Bank, Cash Pickup, Mobile Wallet |
-| 7 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 163.600 | — | Bank, Mobile Wallet |
-| 8 | [NALA](https://www.nala.com/country/bangladesh) | 162.922 | — | Bank, Mobile Wallet |
+| 6 | [TapTapSend](https://www.taptapsend.com/send-money-to/bangladesh) | 163.600 | — | Bank, Mobile Wallet |
+| 7 | [NALA](https://www.nala.com/country/bangladesh) | 162.922 | — | Bank, Mobile Wallet |
 
 ### EUR to BDT
 
@@ -136,7 +135,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-10-23T23:35:29.858985+00:00",
+  "updated_at": "2026-10-24T02:03:21.046273+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -154,4 +153,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-10-23 23:35 UTC*
+*Auto-generated on 2026-10-24 02:03 UTC*
