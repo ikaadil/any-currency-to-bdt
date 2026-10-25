@@ -2,7 +2,7 @@
 
 I compared Wise, Remitly, Ria, Western Union + 11 more and update it hourly.
 
-**Last updated:** `2026-10-24 22:00 UTC`
+**Last updated:** `2026-10-25 00:01 UTC`
 
 ## Why this exists
 
@@ -65,8 +65,8 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 AUD = BDT | Fee | Delivery |
 |--:|----------|---------------:|-----:|----------|
-| **1** | [Remitly](https://www.remitly.com/au/en/bangladesh) | **87.760** | — | Bank, Mobile Wallet, Cash Pickup |
-| 2 | [WorldRemit](https://www.worldremit.com/en-au/bangladesh) | 87.229 | — | Bank, Mobile Wallet, Cash Pickup |
+| **1** | [Western Union](https://www.westernunion.com/au/en/currency-converter/aud-to-bdt-rate.html) | **87.960** | — | Bank, Cash Pickup, Mobile Wallet |
+| 2 | [Remitly](https://www.remitly.com/au/en/bangladesh) | 87.760 | — | Bank, Mobile Wallet, Cash Pickup |
 | 3 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=AUD&To=BDT) | 87.107 | — | Bank |
 | 4 | [OrbitRemit](https://www.orbitremit.com/currency-converter/aud-to-bdt) | 87.070 | — | Bank, Mobile Wallet |
 | 5 | [Wise](https://wise.com/au/currency-converter/aud-to-bdt-rate) | 87.012 | — | Bank |
@@ -78,10 +78,9 @@ Sending money to Bangladesh? Provider sites show one rate at a time. This repo *
 
 | # | Provider | 1 SGD = BDT | Delivery |
 |--:|----------|---------------:|----------|
-| **1** | [Western Union](https://www.westernunion.com/sg/en/currency-converter/sgd-to-bdt-rate.html) | **97.123** | Bank, Cash Pickup, Mobile Wallet |
-| 2 | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=SGD&To=BDT) | 96.884 | Bank |
-| 3 | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | 96.786 | Bank |
-| 4 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 96.750 | Bank |
+| **1** | [Xe](https://www.xe.com/currencyconverter/convert/?Amount=1&From=SGD&To=BDT) | **96.884** | Bank |
+| 2 | [Instarem](https://www.instarem.com/en-us/currency-conversion/sgd-to-bdt/) | 96.786 | Bank |
+| 3 | [Wise](https://wise.com/sg/currency-converter/sgd-to-bdt-rate) | 96.750 | Bank |
 
 ### AED to BDT
 
@@ -138,7 +137,7 @@ Raw rate data is available in [`rates.json`](rates.json) for programmatic use:
 
 ```json
 {
-  "updated_at": "2026-10-24T22:00:34.664064+00:00",
+  "updated_at": "2026-10-25T00:01:32.440145+00:00",
   "target": "BDT",
   "rates": {
     "USD": [
@@ -156,4 +155,4 @@ This project is independent and not affiliated with any remittance provider. Rat
 
 ---
 
-*Auto-generated on 2026-10-24 22:00 UTC*
+*Auto-generated on 2026-10-25 00:01 UTC*
