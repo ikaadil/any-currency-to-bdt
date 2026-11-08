@@ -101,7 +101,8 @@ class TapTapSend(Provider):
         return rates
 
     async def fetch_rate(self, session, src):
-        return (await self._load(session)).get(src)
+        rate = (await self._load(session)).get(src)
+        return (rate, 0.99) if rate is not None else None
 
 
 class Nala(Provider):
