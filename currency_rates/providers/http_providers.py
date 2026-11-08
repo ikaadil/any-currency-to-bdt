@@ -78,8 +78,23 @@ class TapTapSend(Provider):
         "X-Device-Model": "web",
     }
 
+    _FEES_API = "https://api.taptapsend.com/api/website/v1/provider-fees"
+
     def __init__(self):
         self._cache: dict[str, float] | None = None
+        self._fees: dict[str, float] = {}
+
+    async def _load_fees(self, session, iso_to_cur: dict[str, str]) -> None:
+        # Fee (in source currency) for the Bangladesh mobile-wallet (bKash) payout.
+        async with session.get(self._FEES_API, headers=self._API_HEADERS,
+                               timeout=TIMEOUT) as r:
+            if r.status != 200:
+                return
+            data = await r.json(content_type=None)
+        for iso, dests in data.items():
+            for row in dests.get("BD", []):
+                if row.get("literal") == "bkash-bangladesh" and iso in iso_to_cur:
+                    self._fees[iso_to_cur[iso]] = float(row["fee"])
 
     async def _load(self, session: aiohttp.ClientSession) -> dict[str, float]:
         if self._cache is not None:
@@ -90,6 +105,12 @@ class TapTapSend(Provider):
             if r.status != 200:
                 return rates
             data = await r.json(content_type=None)
+            iso_to_cur = {c["isoCountryCode"]: c["currency"]
+                          for c in data.get("availableCountries", [])}
+            try:
+                await self._load_fees(session, iso_to_cur)
+            except Exception:
+                pass  # fees are optional; keep rates
             for country in data.get("availableCountries", []):
                 cur = country["currency"]
                 for corridor in country.get("corridors", []):
@@ -102,7 +123,10 @@ class TapTapSend(Provider):
 
     async def fetch_rate(self, session, src):
         rate = (await self._load(session)).get(src)
-        return (rate, 0.99) if rate is not None else None
+        if rate is None:
+            return None
+        fee = self._fees.get(src)
+        return (rate, fee) if fee is not None else rate
 
 
 class Nala(Provider):
