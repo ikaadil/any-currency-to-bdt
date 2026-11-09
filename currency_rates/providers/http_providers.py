@@ -1,6 +1,7 @@
 """HTTP-only providers: scrape rates via aiohttp without a browser."""
 from __future__ import annotations
 
+import json
 import re
 from typing import ClassVar
 
@@ -37,7 +38,7 @@ class Wise(Provider):
 
 class Remitly(Provider):
     name = "Remitly"
-    url = "https://www.remitly.com/us/en/bangladesh"
+    url = "https://www.remitly.com/us/en/money-transfer/send-money-to-bangladesh"
     delivery = "Bank, Mobile Wallet, Cash Pickup"
 
     _REGIONS: ClassVar[dict[str, tuple[str, str]]] = {
@@ -45,25 +46,53 @@ class Remitly(Provider):
         "CAD": ("ca", "en"), "AUD": ("au", "en"),
     }
 
+    @staticmethod
+    def _merchandising_facts(html: str) -> dict | None:
+        # Server-rendered JSON block on the currency-converter pages:
+        # headline (welcome) rate + the everyday fee Remitly now charges.
+        m = re.search(r'"merchandisingFacts"\s*:\s*\{[^{}]*\}', html)
+        if not m:
+            return None
+        try:
+            return json.loads("{" + m.group(0) + "}")["merchandisingFacts"]
+        except (ValueError, KeyError):
+            return None
+
     async def fetch_rate(self, session, src):
         region = self._REGIONS.get(src)
         if not region:
             return None
         country, lang = region
-        url = f"https://www.remitly.com/{country}/{lang}/bangladesh"
+        url = (f"https://www.remitly.com/{country}/{lang}/"
+               f"currency-converter/{src.lower()}-to-bdt-rate")
         async with session.get(url, timeout=TIMEOUT) as r:
             if r.status != 200:
                 return None
             html = await r.text()
-            text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
-            matches = re.findall(r"(\d{2,4}\.\d{1,6})\s*BDT", text)
-            if not matches:
-                return None
-            return max(float(m) for m in matches)
+        facts = self._merchandising_facts(html)
+        if facts:
+            rate_raw = (facts.get("effectiveRateAsHighAsLive")
+                        or facts.get("effectiveRateAsHighAs"))
+            if rate_raw:
+                rate = float(rate_raw)
+                fee_raw = (facts.get("everydayFeeAsLowAs")
+                           or facts.get("bestNonPromoAwareFees"))
+                try:
+                    fee = float(fee_raw) if fee_raw else None
+                except ValueError:
+                    fee = None
+                return (rate, fee) if fee is not None else rate
+        # Fallback: scrape the headline "N BDT" rate (commas = de locale).
+        text = BeautifulSoup(html, "html.parser").get_text(" ", strip=True)
+        matches = re.findall(r"(\d{2,4}[.,]\d{1,6})\s*BDT", text)
+        if not matches:
+            return None
+        return max(float(m.replace(",", ".")) for m in matches)
 
     def get_url(self, src):
         country, lang = self._REGIONS.get(src, ("us", "en"))
-        return f"https://www.remitly.com/{country}/{lang}/bangladesh"
+        return (f"https://www.remitly.com/{country}/{lang}/"
+                f"money-transfer/send-money-to-bangladesh")
 
 
 class TapTapSend(Provider):

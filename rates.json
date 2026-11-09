@@ -5,10 +5,10 @@
         "USD": [
             {
                 "provider": "Remitly",
-                "url": "https://www.remitly.com/us/en/bangladesh",
+                "url": "https://www.remitly.com/us/en/money-transfer/send-money-to-bangladesh",
                 "rate": 124.54,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
+                "fee": 0.99
             },
             {
                 "provider": "SendWave",
@@ -63,10 +63,10 @@
         "GBP": [
             {
                 "provider": "Remitly",
-                "url": "https://www.remitly.com/gb/en/bangladesh",
+                "url": "https://www.remitly.com/gb/en/money-transfer/send-money-to-bangladesh",
                 "rate": 169.33,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
+                "fee": 0.99
             },
             {
                 "provider": "SendWave",
@@ -119,6 +119,13 @@
             }
         ],
         "EUR": [
+            {
+                "provider": "Remitly",
+                "url": "https://www.remitly.com/de/en/money-transfer/send-money-to-bangladesh",
+                "rate": 139.88,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": 0.99
+            },
             {
                 "provider": "TapTapSend",
                 "url": "https://www.taptapsend.com/send-money-to/bangladesh",
@@ -178,18 +185,18 @@
                 "fee": null
             },
             {
-                "provider": "Remitly",
-                "url": "https://www.remitly.com/ca/en/bangladesh",
-                "rate": 87.93,
-                "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
-            },
-            {
                 "provider": "Wise",
                 "url": "https://wise.com/ca/currency-converter/cad-to-bdt-rate",
                 "rate": 87.907,
                 "delivery": "Bank",
                 "fee": null
+            },
+            {
+                "provider": "Remitly",
+                "url": "https://www.remitly.com/ca/en/money-transfer/send-money-to-bangladesh",
+                "rate": 87.9,
+                "delivery": "Bank, Mobile Wallet, Cash Pickup",
+                "fee": 1.49
             },
             {
                 "provider": "Instarem",
@@ -223,10 +230,10 @@
         "AUD": [
             {
                 "provider": "Remitly",
-                "url": "https://www.remitly.com/au/en/bangladesh",
-                "rate": 86.73,
+                "url": "https://www.remitly.com/au/en/money-transfer/send-money-to-bangladesh",
+                "rate": 86.87,
                 "delivery": "Bank, Mobile Wallet, Cash Pickup",
-                "fee": null
+                "fee": 0.99
             },
             {
                 "provider": "OrbitRemit",
